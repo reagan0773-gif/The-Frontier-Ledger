@@ -7,13 +7,13 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: CHANGEME_API_KEY_NAME      # name of your App Store Connect API key in Codemagic
+      app_store_connect: Frontier Ledger key      # name of your App Store Connect API key in Codemagic
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.CHANGEME.frontierledger   # must match capacitor.config.json
+        bundle_identifier: com.reagan.frontierledger   # must match capacitor.config.json
       vars:
-        APP_STORE_APPLE_ID: 0000000000                   # CHANGEME: the app's Apple ID number from App Store Connect
+        APP_STORE_APPLE_ID: 6834229000                   # CHANGEME: the app's Apple ID number from App Store Connect
         XCODE_WORKSPACE: ios/App/App.xcworkspace
         XCODE_SCHEME: App
       node: 20
