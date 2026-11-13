@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Frontier Ledger</title>
+<meta name="description" content="A register of outlaws, lawmen, gunfighters and frontier figures of the American Old West: biographies, gunfights, cattle trails, towns and graves, with On This Day.">
+<meta property="og:title" content="The Frontier Ledger">
+<meta property="og:description" content="Outlaws, lawmen, gunfighters and frontier figures of the American Old West: biographies, gunfights, cattle trails, towns and graves.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a county clerk's ledger of the frontier. Woodtype masthead, ledger-ruled entries,
+   a colored role stripe on each entry; maps, timelines and a web of who-rode-with-whom drawn in the same ink. */
+:root {
+  --paper: #e8e2d4;
+  --sheet: #f4efe4;
+  --ink: #241d15;
+  --ink-soft: #5d5244;
+  --rule: #cbbfa8;
+  --accent: #8b2c1d;
+  --brass: #8a6619;
+  --outlaw: #8b2c1d;
+  --lawman: #2d5674;
+  --gunfighter: #8a6619;
+  --figure: #4f6b3a;
+  --fact: #3f6b45;
+  --disputed: #9a6a12;
+  --legend: #7b3b8c;
+  --shadow: 0 1px 0 rgba(60,40,10,.08), 0 6px 18px -10px rgba(60,40,10,.35);
+  --display: "Rye", "Georgia", serif;
+  --body: "Alegreya", "Georgia", serif;
+  --label: "Alegreya Sans SC", "Gill Sans", "Trebuchet MS", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #16130f; --sheet: #211c16; --ink: #ede3cf; --ink-soft: #b4a68c; --rule: #3c3327;
+    --accent: #d0644d; --brass: #d6a94b; --outlaw: #cf5f48; --lawman: #6c9cc2; --gunfighter: #d6a94b; --figure: #8fb36f;
+    --fact: #86b98c; --disputed: #e0b45a; --legend: #c48bd3;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #16130f; --sheet: #211c16; --ink: #ede3cf; --ink-soft: #b4a68c; --rule: #3c3327;
+  --accent: #d0644d; --brass: #d6a94b; --outlaw: #cf5f48; --lawman: #6c9cc2; --gunfighter: #d6a94b; --figure: #8fb36f;
+  --fact: #86b98c; --disputed: #e0b45a; --legend: #c48bd3;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--accent); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+.muted { color: var(--ink-soft); }
+
+header.mast { border-bottom: 3px double var(--ink); padding: 28px 0 18px; }
+.mast h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 62px); line-height: 1; margin: 0; text-wrap: balance; }
+.mast .sub { font-family: var(--label); font-size: 15px; letter-spacing: .06em; color: var(--ink-soft); margin-top: 8px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 16px; font-family: var(--label); font-size: 15px; color: var(--ink-soft); }
+.stats b { font-family: var(--body); font-size: 20px; color: var(--ink); margin-right: 4px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+nav.tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin: 16px 0 18px; border-bottom: 1px solid var(--rule); }
+nav.tabs a { font-family: var(--label); font-size: 16px; letter-spacing: .05em; text-decoration: none; color: var(--ink-soft); padding: 8px 11px 9px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+nav.tabs a[aria-current="page"] { color: var(--ink); border-color: var(--accent); }
+nav.tabs .spacer { flex: 1; }
+.tab-actions { display: flex; gap: 6px; padding-bottom: 6px; }
+.btn { font-family: var(--label); font-size: 15px; letter-spacing: .05em; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); padding: 7px 14px; border-radius: 3px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.danger { background: transparent; color: var(--accent); border-color: var(--accent); }
+.btn:hover { filter: brightness(1.1); }
+.btn.ghost:hover { border-color: var(--ink); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+.toolbar input[type=search] { flex: 1 1 240px; padding: 8px 12px; border: 1px solid var(--rule); background: var(--sheet); border-radius: 3px; }
+.toolbar select { padding: 8px 10px; border: 1px solid var(--rule); background: var(--sheet); border-radius: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--label); font-size: 14px; letter-spacing: .04em; padding: 4px 11px; border: 1px solid var(--rule); border-radius: 99px; background: transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chip .dot { width: 8px; height: 8px; margin: 0; }
+.count { font-family: var(--label); color: var(--ink-soft); font-size: 15px; margin: -4px 0 12px; }
+.section-intro { color: var(--ink-soft); max-width: 70ch; margin: -4px 0 16px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding-bottom: 48px; }
+.card { position: relative; text-align: left; background: var(--sheet); border: 1px solid var(--rule); border-top: 5px solid var(--role, var(--brass)); border-radius: 2px; padding: 14px 16px; box-shadow: var(--shadow); cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: transform .15s ease; }
+.card:hover { transform: translateY(-2px); }
+.card .role { font-family: var(--label); font-size: 13px; letter-spacing: .08em; color: var(--role, var(--brass)); }
+.card h3 { margin: 0; font-size: 22px; line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.card .alias { font-style: italic; color: var(--ink-soft); font-size: 16px; margin-top: -3px; }
+.card .years { font-size: 16px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 4px 0; display: flex; justify-content: space-between; gap: 8px; }
+.card .years span:last-child { color: var(--ink-soft); }
+.card .end { font-size: 15px; color: var(--ink-soft); }
+.card .end b { color: var(--ink); font-weight: 500; }
+.card p { margin: 0; font-size: 15.5px; color: var(--ink-soft); }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.tag { font-family: var(--label); font-size: 13px; letter-spacing: .03em; padding: 1px 8px; border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-soft); }
+.verdict { font-family: var(--label); font-size: 12px; letter-spacing: .08em; padding: 0 7px; border-radius: 2px; border: 1px solid currentColor; margin-left: 6px; white-space: nowrap; }
+.v-fact { color: var(--fact); } .v-disputed { color: var(--disputed); } .v-legend { color: var(--legend); }
+
+.plinks { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.plink { background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; font-size: 16px; text-align: left; }
+.plink:hover { text-decoration-color: var(--accent); }
+.plink small { color: var(--ink-soft); font-size: 14px; }
+
+.era-classic { border-color: var(--brass) !important; color: var(--brass) !important; }
+.era-closing { border-color: var(--lawman) !important; color: var(--lawman) !important; }
+.era-pre, .era-post { border-style: dashed !important; }
+.tl-era { position: absolute; top: 4px; height: 18px; font-family: var(--label); font-size: 12px; letter-spacing: .05em; padding: 1px 6px; white-space: nowrap; overflow: hidden; border: 1px solid var(--rule); border-radius: 2px; background: var(--sheet); }
+.tl-era.era-classic { background: color-mix(in srgb, var(--brass) 14%, var(--sheet)); }
+.tl-era.era-closing { background: color-mix(in srgb, var(--lawman) 14%, var(--sheet)); }
+.era-pick { border: 1px solid var(--rule); border-radius: 3px; padding: 8px 12px 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--label); font-size: 14px; color: var(--ink-soft); }
+.era-pick legend { padding: 0 4px; letter-spacing: .05em; }
+.era-pick label { flex-direction: row !important; align-items: center; gap: 6px !important; font-family: var(--body); color: var(--ink); letter-spacing: 0; }
+.otd-strip { margin-top: 10px; font-size: 16px; }
+.otd-strip a { text-decoration: none; color: var(--ink); border-bottom: 1px dashed var(--rule); }
+.otd-strip a:hover { border-color: var(--accent); }
+.otd-strip b { font-family: var(--label); font-weight: 500; letter-spacing: .05em; color: var(--accent); }
+.otd-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.otd-head .spacer { flex: 1; }
+.otd-head select { padding: 8px 10px; border: 1px solid var(--rule); background: var(--sheet); border-radius: 3px; }
+.otd-head .btn.ghost { font-size: 20px; padding: 4px 14px; }
+.otd-date h2 { font-family: var(--display); font-weight: 400; font-size: 40px; margin: 0; line-height: 1; }
+.otd-date .muted { font-family: var(--label); font-size: 14px; letter-spacing: .06em; }
+.otd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-bottom: 18px; }
+.otd-sec { background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 14px 18px; align-self: start; }
+.otd-sec h3 { font-family: var(--label); font-weight: 500; letter-spacing: .07em; font-size: 16px; margin: 0 0 8px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+.otd-row { display: grid; grid-template-columns: 58px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rule); border-left: 3px solid var(--role, transparent); padding-left: 8px; }
+.otd-row:last-child { border-bottom: 0; }
+.otd-yr { font-family: var(--display); font-size: 20px; color: var(--accent); }
+.otd-sub { font-size: 14.5px; }
+/* Map */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 1fr); gap: 24px; padding-bottom: 48px; }
+.map-card { background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 14px; }
+.map-card svg { width: 100%; height: auto; display: block; }
+.tile { cursor: pointer; }
+.tile rect { stroke: var(--rule); stroke-width: 1; }
+.tile text { font-family: var(--label); pointer-events: none; }
+.tile.sel rect { stroke: var(--accent); stroke-width: 3; }
+.tile:hover rect { stroke: var(--ink); }
+.map-key { display: flex; align-items: center; gap: 8px; font-family: var(--label); font-size: 13px; color: var(--ink-soft); margin-top: 10px; flex-wrap: wrap; }
+.map-key i { display: inline-block; width: 22px; height: 12px; border: 1px solid var(--rule); }
+.abroad { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--label); font-size: 14px; color: var(--ink-soft); }
+.place-detail { background: var(--sheet); border: 1px solid var(--rule); padding: 18px 22px; box-shadow: var(--shadow); align-self: start; }
+.place-detail h2 { font-family: var(--display); font-weight: 400; font-size: 32px; margin: 0 0 4px; }
+.place-detail h4, .dr-body h4 { font-family: var(--label); letter-spacing: .07em; font-size: 15px; color: var(--ink-soft); margin: 18px 0 6px; border-bottom: 1px solid var(--rule); padding-bottom: 3px; font-weight: 500; }
+
+/* Timeline */
+.tl { background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 14px 16px 18px; margin-bottom: 20px; overflow-x: auto; }
+.tl-inner { min-width: 760px; position: relative; }
+.tl-axis, .tl-row { display: grid; grid-template-columns: 190px 1fr; align-items: center; }
+.tl-axis { height: 26px; font-family: var(--label); font-size: 13px; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+.tl-track { position: relative; height: 100%; }
+.tl-tick { position: absolute; top: 4px; transform: translateX(-50%); }
+.tl-row { height: 22px; cursor: pointer; }
+.tl-row:hover { background: color-mix(in srgb, var(--rule) 35%, transparent); }
+.tl-row .nm { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+.tl-bar { position: absolute; top: 7px; height: 8px; border-radius: 1px; background: var(--role); }
+.tl-bar.open { background: linear-gradient(90deg, var(--role), transparent); }
+.tl-end { position: absolute; top: 3px; width: 2px; height: 16px; background: var(--ink); }
+.tl-band { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--brass) 12%, transparent); border-left: 1px dashed color-mix(in srgb, var(--brass) 60%, transparent); border-right: 1px dashed color-mix(in srgb, var(--brass) 60%, transparent); pointer-events: none; }
+.tl-mark { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px dashed var(--accent); pointer-events: none; }
+.tl-ev { position: absolute; top: 5px; width: 10px; height: 10px; transform: translateX(-50%) rotate(45deg); background: var(--accent); border: 1px solid var(--sheet); cursor: pointer; padding: 0; }
+.tl-evrow { height: 26px; border-bottom: 1px solid var(--rule); cursor: default; }
+.tl-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--label); font-size: 14px; color: var(--ink-soft); margin: 0 0 10px; }
+.tl-legend i { display: inline-block; width: 18px; height: 8px; margin-right: 6px; vertical-align: 1px; }
+
+/* Events */
+.ev-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 48px; }
+.ev { display: grid; grid-template-columns: 84px 1fr; gap: 16px; background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 14px 18px; text-align: left; cursor: pointer; }
+.ev .yr { font-family: var(--display); font-size: 28px; line-height: 1; color: var(--accent); }
+.ev h3 { margin: 0 0 2px; font-size: 21px; }
+.ev .meta { font-family: var(--label); font-size: 14px; letter-spacing: .04em; color: var(--ink-soft); }
+.ev p { margin: 6px 0 4px; }
+.kind { font-family: var(--label); font-size: 12px; letter-spacing: .08em; padding: 0 7px; border: 1px solid var(--rule); border-radius: 2px; margin-right: 6px; }
+
+/* Weapons */
+.wtable { width: 100%; border-collapse: collapse; background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); margin-bottom: 24px; }
+.wtable th { font-family: var(--label); font-weight: 500; text-align: left; font-size: 15px; letter-spacing: .06em; color: var(--ink-soft); padding: 10px 14px; border-bottom: 2px solid var(--rule); }
+.wtable td { padding: 9px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.wtable tr.grp td { font-family: var(--display); font-size: 20px; background: color-mix(in srgb, var(--rule) 30%, transparent); padding-top: 12px; }
+.tablewrap { overflow-x: auto; padding-bottom: 24px; }
+
+/* Connections */
+.net-wrap { position: relative; background: var(--sheet); border: 1px solid var(--rule); box-shadow: var(--shadow); margin-bottom: 48px; }
+#net { display: block; width: 100%; height: min(72vh, 680px); cursor: grab; touch-action: none; }
+#net.dragging { cursor: grabbing; }
+.net-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); font-family: var(--label); font-size: 14px; letter-spacing: .03em; padding: 4px 9px; border-radius: 3px; display: none; white-space: nowrap; }
+.net-help { position: absolute; left: 12px; bottom: 10px; font-family: var(--label); font-size: 13px; color: var(--ink-soft); pointer-events: none; }
+.net-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--label); font-size: 14px; color: var(--ink-soft); margin-bottom: 10px; align-items: center; }
+.net-legend i { display: inline-block; width: 22px; height: 0; border-top: 2px solid; vertical-align: 4px; margin-right: 6px; }
+
+/* Drawer */
+.scrim { position: fixed; inset: 0; background: rgba(20,14,8,.45); display: none; z-index: 20; }
+.scrim.open { display: block; }
+aside.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(540px, 100%); background: var(--sheet); border-left: 1px solid var(--rule); box-shadow: -10px 0 30px -12px rgba(0,0,0,.45); z-index: 21; overflow-y: auto; transform: translateX(105%); transition: transform .22s ease; }
+aside.drawer.open { transform: none; }
+.dr-head { border-top: 8px solid var(--role, var(--brass)); padding: 20px 24px 14px; border-bottom: 3px double var(--rule); }
+.dr-head .role { font-family: var(--label); letter-spacing: .08em; color: var(--role, var(--brass)); font-size: 14px; }
+.dr-head h2 { font-family: var(--display); font-weight: 400; font-size: 32px; line-height: 1.05; margin: 4px 0 4px; text-wrap: balance; padding-right: 30px; }
+.dr-head .alias { font-style: italic; color: var(--ink-soft); }
+.dr-body { padding: 8px 24px 16px; }
+dl.ledger { display: grid; grid-template-columns: 128px 1fr; margin: 0; }
+dl.ledger dt { font-family: var(--label); font-size: 14px; letter-spacing: .05em; color: var(--ink-soft); padding: 9px 0; border-bottom: 1px solid var(--rule); }
+dl.ledger dd { margin: 0; padding: 8px 0 8px 8px; border-bottom: 1px solid var(--rule); }
+dl.ledger dd ul { margin: 0; padding-left: 18px; }
+.trail-list { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); }
+.route { list-style: none; margin: 10px 0 12px; padding: 0 0 0 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; font-size: 14.5px; }
+.route li { display: inline-flex; align-items: center; }
+.route li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--brass); margin-right: 6px; flex: none; }
+.route li:not(:last-child)::after { content: ""; width: 22px; border-top: 2px dashed var(--brass); margin: 0 8px; opacity: .7; }
+.route li:first-child::before, .route li:last-child::before { width: 11px; height: 11px; background: var(--accent, var(--brass)); }
+.visited-badge { margin-left: 8px; padding: 1px 7px; border-radius: 2px; background: #3f6b3a; color: #f6efe0; font-size: 11.5px; letter-spacing: .04em; white-space: nowrap; }
+.visit { margin: 8px 0 14px; padding: 10px 12px; border-left: 3px solid #3f6b3a; background: color-mix(in srgb, #3f6b3a 10%, transparent); font-size: 15.5px; }
+.visit b { display: block; color: #3f6b3a; font-weight: 600; }
+.visit span { display: block; margin-top: 4px; }
+.chip.visit-chip[aria-pressed="true"] { background: #3f6b3a; border-color: #3f6b3a; color: #f6efe0; }
+@media (max-width: 600px) {
+  header.mast { padding: 16px 0 12px; }
+  header.mast h1 { font-size: 34px; line-height: 1.05; }
+  header.mast .sub { font-size: 13px; letter-spacing: .04em; }
+  .stats { gap: 2px 14px; margin-top: 10px; font-size: 13px; }
+  .stats b { font-size: 16px; }
+  nav.tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; position: sticky; top: 0; z-index: 5; background: var(--paper); margin: 10px 0 14px; }
+  html.app nav.tabs { top: env(safe-area-inset-top); }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  nav.tabs a { white-space: nowrap; flex: none; font-size: 15px; padding: 10px 10px; }
+  nav.tabs .spacer { display: none; }
+  nav.tabs .tab-actions { flex: none; display: flex; gap: 6px; }
+  nav.tabs .btn { flex: none; white-space: nowrap; }
+}
+html.app #copyCsv { display: none; }
+html.app body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+html.app .drawer { padding-top: env(safe-area-inset-top); }
+.bio { margin: 6px 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); font-size: 16.5px; line-height: 1.6; }
+.bio p { margin: 0 0 10px; }
+.bio p:first-child::first-letter { font-family: var(--display, inherit); float: left; font-size: 3em; line-height: .9; padding: 4px 6px 0 0; color: var(--role, var(--brass)); }
+.note { margin-top: 14px; padding: 10px 12px; border-left: 3px solid var(--brass); background: color-mix(in srgb, var(--brass) 8%, transparent); font-size: 15.5px; }
+.dr-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 24px; }
+.close { position: absolute; top: 14px; right: 14px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px; width: 34px; height: 34px; cursor: pointer; font-size: 20px; line-height: 1; z-index: 2; }
+
+/* Forms */
+dialog.form { border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); padding: 0; width: min(740px, calc(100% - 24px)); max-height: calc(100% - 40px); box-shadow: var(--shadow); }
+dialog::backdrop { background: rgba(20,14,8,.55); }
+.form-head { padding: 18px 22px 10px; border-bottom: 3px double var(--rule); }
+.form-head h2 { font-family: var(--display); font-weight: 400; margin: 0; font-size: 28px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; padding: 16px 22px; }
+.form-grid label { display: flex; flex-direction: column; gap: 3px; font-family: var(--label); font-size: 14px; letter-spacing: .05em; color: var(--ink-soft); }
+.form-grid .full { grid-column: 1 / -1; }
+.form-grid input, .form-grid select, .form-grid textarea { font-family: var(--body); font-size: 16px; padding: 7px 9px; border: 1px solid var(--rule); background: var(--paper); border-radius: 3px; color: var(--ink); letter-spacing: 0; }
+.form-grid textarea { min-height: 60px; resize: vertical; }
+.form-grid .hint { font-family: var(--body); font-size: 13.5px; letter-spacing: 0; color: var(--ink-soft); }
+.form-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 22px 18px; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+.form-err { color: var(--accent); font-size: 15px; }
+
+/* Wanted poster: its own paper world in both themes */
+dialog.poster-dlg { border: 0; padding: 0; background: transparent; max-width: calc(100% - 24px); max-height: calc(100% - 24px); overflow: visible; }
+.poster { width: min(460px, calc(100vw - 32px)); background: #e9dcc0; background-image: radial-gradient(ellipse at 20% 15%, rgba(255,255,255,.35), transparent 55%), radial-gradient(ellipse at 85% 90%, rgba(120,80,30,.25), transparent 60%); color: #2a1d10; padding: 26px 28px 22px; text-align: center; box-shadow: 0 20px 50px -10px rgba(0,0,0,.6); border: 1px solid #b89c6a; position: relative; color-scheme: light; }
+.poster::before { content: ""; position: absolute; inset: 9px; border: 2px solid #2a1d10; pointer-events: none; }
+.poster .hd { font-family: var(--display); font-size: 58px; line-height: .95; letter-spacing: .02em; }
+.poster .hd.small { font-size: 34px; }
+.poster .for { font-family: var(--label); letter-spacing: .14em; font-size: 14px; margin: 8px 0 12px; }
+.poster .frame { width: 150px; height: 170px; margin: 0 auto 12px; border: 3px double #2a1d10; display: grid; place-items: center; background: repeating-linear-gradient(45deg, rgba(42,29,16,.06) 0 6px, transparent 6px 12px); font-family: var(--display); font-size: 54px; color: rgba(42,29,16,.55); }
+.poster .frame.photo { width: 190px; height: 230px; padding: 4px; background: #2a1d10; overflow: hidden; }
+.poster .frame.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; filter: sepia(.45) contrast(1.08) brightness(.97); display: block; }
+.poster .cred { font-family: var(--body); font-size: 12.5px; font-style: italic; margin: -6px 0 10px; color: #4a3720; }
+.poster .pstat.authenticated { color: #3f5f2e; } .poster .pstat.disputed { color: #8a2f1d; }
+dialog.poster-dlg[open] { overflow-y: auto; }
+.photo-ed { width: min(460px, calc(100vw - 32px)); margin-top: 14px; background: var(--sheet); border: 1px solid var(--rule); padding: 14px 16px; display: grid; gap: 10px; font-size: 15px; color: var(--ink); }
+.photo-ed .pe-title { font-family: var(--label); letter-spacing: .06em; font-size: 14px; color: var(--ink-soft); }
+.photo-ed label { display: grid; gap: 4px; font-family: var(--label); font-size: 13px; letter-spacing: .04em; color: var(--ink-soft); }
+.photo-ed input:not([type=file]), .photo-ed select { font: inherit; font-family: var(--body); font-size: 15px; padding: 7px 9px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); }
+.photo-ed .pe-act { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.photo-ed .pe-msg { font-size: 14px; color: var(--ink-soft); }
+.poster .nm { font-family: var(--display); font-size: 30px; line-height: 1.05; text-wrap: balance; }
+.poster .al { font-family: var(--body); font-style: italic; font-size: 18px; margin-top: 2px; }
+.poster .rule { border-top: 2px solid #2a1d10; border-bottom: 1px solid #2a1d10; height: 4px; margin: 12px 30px; }
+.poster .txt { font-family: var(--body); font-size: 16px; line-height: 1.4; margin: 4px 0; text-wrap: balance; }
+.poster .txt b { font-family: var(--label); letter-spacing: .08em; font-weight: 700; font-size: 13px; }
+.poster .foot { font-family: var(--label); letter-spacing: .14em; font-size: 12px; margin-top: 14px; }
+.poster-close { position: absolute; top: -14px; right: -14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #b89c6a; background: #2a1d10; color: #e9dcc0; cursor: pointer; font-size: 18px; }
+
+.notice { background: var(--sheet); border: 1px dashed var(--rule); padding: 28px; text-align: center; color: var(--ink-soft); margin-bottom: 48px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 8px 16px; border-radius: 3px; font-family: var(--label); letter-spacing: .04em; z-index: 60; display: none; }
+.toast.show { display: block; }
+footer { border-top: 3px double var(--ink); padding: 14px 0 30px; font-family: var(--label); font-size: 14px; color: var(--ink-soft); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+@media (max-width: 820px) {
+  .mapwrap { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  dl.ledger { grid-template-columns: 104px 1fr; }
+  .ev { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <h1>The Frontier Ledger</h1>
+    <div class="sub">A register of outlaws, lawmen, gunfighters &amp; frontier figures of the American West</div>
+    <div class="stats" id="stats"><span>Opening the ledger…</span></div>
+    <div class="otd-strip" id="otdStrip"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="tabs" aria-label="Views">
+    <a href="#people" id="tab-people">People</a>
+    <a href="#today" id="tab-today">On This Day</a>
+    <a href="#events" id="tab-events">Events</a>
+    <a href="#towns" id="tab-towns">Towns</a>
+    <a href="#gangs" id="tab-gangs">Gangs &amp; Posses</a>
+    <a href="#trails" id="tab-trails">Trails</a>
+    <a href="#map" id="tab-map">Map</a>
+    <a href="#timeline" id="tab-timeline">Timeline</a>
+    <a href="#connections" id="tab-connections">Connections</a>
+    <a href="#weapons" id="tab-weapons">Weapons</a>
+    <span class="spacer"></span>
+    <span class="tab-actions"><button class="btn ghost" id="copyCsv" type="button">Copy as CSV</button><button class="btn" id="addBtn" type="button">Add a person</button></span>
+  </nav>
+  <div id="view"></div>
+</main>
+
+<div class="wrap"><footer><span id="footNote">Entries are kept in this page's database and update live. <button class="btn ghost" type="button" id="snapBtn" hidden>Save public snapshot</button> <button class="btn ghost" type="button" id="dlBtn" hidden>Download data file (for the app)</button></span><span>Dates are years; “c.” marks an estimate. Verdicts: <span class="v-fact">Fact</span> · <span class="v-disputed">Disputed</span> · <span class="v-legend">Legend</span></span></footer></div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Details"></aside>
+
+<dialog class="form" id="formDlg">
+  <form id="entryForm" method="dialog">
+    <div class="form-head"><h2 id="formTitle">Add</h2></div>
+    <div class="form-grid" id="formGrid"></div>
+    <div class="form-foot">
+      <span class="form-err" id="formErr"></span>
+      <span style="display:flex;gap:8px"><button class="btn ghost" type="button" id="formCancel">Cancel</button><button class="btn" type="submit" id="formSave">Save entry</button></span>
+    </div>
+  </form>
+</dialog>
+<dialog class="poster-dlg" id="posterDlg" aria-label="Wanted poster"></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>window.LEDGER_PUBLIC={snapshot:"data.json",photos:{},at:"",app:true};</script>
+<script>
+(() => {
+const ROLES = ["Outlaw", "Lawman", "Gunfighter", "Frontier Figure"];
+const ROLE_VAR = { "Outlaw": "--outlaw", "Lawman": "--lawman", "Gunfighter": "--gunfighter", "Frontier Figure": "--figure" };
+const PLURAL = { "Outlaw": "Outlaws", "Lawman": "Lawmen", "Gunfighter": "Gunfighters", "Frontier Figure": "Frontier Figures" };
+const VERDICTS = ["Fact", "Disputed", "Legend"];
+const ERAS = [
+  { id: "pre", label: "Before 1865", short: "Before 1865", from: -1e9, to: 1865 },
+  { id: "classic", label: "Classic Wild West (1865–1890)", short: "Classic Wild West", from: 1865, to: 1890 },
+  { id: "closing", label: "Closing Frontier (1890–1912)", short: "Closing Frontier", from: 1890, to: 1913 },
+  { id: "post", label: "After 1912", short: "After 1912", from: 1913, to: 1e9 } ];
+const ERA = Object.fromEntries(ERAS.map(e => [e.id, e]));
+const EVENT_KINDS = ["Gunfight", "Robbery", "Killing", "Battle", "Capture", "Manhunt", "Execution", "Meeting", "Other"];
+const GANG_KINDS = ["Outlaw gang", "Posse", "Lawmen", "Con men", "Other"];
+const MULTI = ["responsible", "operating", "associates", "incidents", "weapons"];
+const STATES = { AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"District of Columbia" };
+const NAME2ABBR = Object.fromEntries(Object.entries(STATES).map(([a, n]) => [n, a]));
+NAME2ABBR["Indian Territory"] = "OK";
+const ABROAD = ["Ontario", "Quebec", "Canada", "Mexico", "Sonora", "Bolivia", "Argentina", "England", "Hungary", "Denmark"];
+const GRID = { AK:[0,0],ME:[11,0],VT:[10,1],NH:[11,1],WA:[1,2],ID:[2,2],MT:[3,2],ND:[4,2],MN:[5,2],IL:[6,2],WI:[7,2],MI:[8,2],NY:[9,2],RI:[10,2],MA:[11,2],OR:[1,3],NV:[2,3],WY:[3,3],SD:[4,3],IA:[5,3],IN:[6,3],OH:[7,3],PA:[8,3],NJ:[9,3],CT:[10,3],CA:[1,4],UT:[2,4],CO:[3,4],NE:[4,4],MO:[5,4],KY:[6,4],WV:[7,4],VA:[8,4],MD:[9,4],DE:[10,4],AZ:[2,5],NM:[3,5],KS:[4,5],AR:[5,5],TN:[6,5],NC:[7,5],SC:[8,5],DC:[9,5],OK:[4,6],LA:[5,6],MS:[6,6],AL:[7,6],GA:[8,6],HI:[0,7],TX:[4,7],FL:[9,7] };
+
+const D = { people: [], towns: [], events: [], gangs: [], trails: [] };
+const loaded = { people: false, towns: false, events: false, gangs: false, trails: false };
+let idx = {};
+const PUB = window.LEDGER_PUBLIC || null; if (PUB && PUB.app) document.documentElement.classList.add("app"); const RAW = {};
+let db = null, assets = null, canWrite = true, status = "Opening the ledger…";
+const ui = { visited: false, q: "", roles: new Set(), state: "", cause: "", gang: "", sort: "name", place: "", evKind: "", era: "", evEra: "", netFilters: new Set(["assoc", "killed", "member"]), netQ: "" };
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const arr = (v) => Array.isArray(v) ? v.filter(x => typeof x === "string" && x.trim()) : (typeof v === "string" && v.trim() ? v.split(";").map(s => s.trim()).filter(Boolean) : []);
+const str = (v) => typeof v === "string" ? v : (typeof v === "number" ? String(v) : "");
+const year = (s) => { s = String(s ?? ""); if (/unknown|after|before/i.test(s)) return null; const m = s.match(/\d{4}/); return m ? +m[0] : null; };
+const roleOf = (p) => ROLES.includes(p.role) ? p.role : "Outlaw";
+const roleColor = (p) => `var(${ROLE_VAR[roleOf(p)]})`;
+const slugify = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "entry";
+const safeUrl = (u) => /^https?:\/\//i.test(u || "") ? u : "";
+const vClass = (v) => "v-" + (VERDICTS.includes(v) ? v : "Legend").toLowerCase();
+
+/* ---------- Normalizing documents ---------- */
+function normPerson(id, d) {
+  const p = { id };
+  ["name","alias","born","birthPlace","died","deathPlace","resting","cause","role","notes","bio"].forEach(k => p[k] = str(d[k]));
+  MULTI.forEach(k => p[k] = arr(d[k]));
+  p.legends = (Array.isArray(d.legends) ? d.legends : arr(d.legends)).map(l => typeof l === "string" ? { text: l, verdict: "Legend" } : { text: str(l?.text), verdict: VERDICTS.includes(l?.verdict) ? l.verdict : "Legend" }).filter(l => l.text);
+  p.sources = (Array.isArray(d.sources) ? d.sources : []).map(s => typeof s === "string" ? { title: s, url: safeUrl(s) } : { title: str(s?.title) || str(s?.url), url: safeUrl(str(s?.url)) }).filter(s => s.title);
+  p.eraOverride = arr(d.eras).filter(x => ERA[x]);
+  const iso = (v) => /^\d{4}-\d{2}-\d{2}$/.test(str(v)) ? str(v) : "";
+  p.birthDate = iso(d.birthDate); p.deathDate = iso(d.deathDate); p.dateNote = str(d.dateNote);
+  p.photoId = /^[\w-]+$/.test(str(d.photoId)) ? str(d.photoId) : ""; p.photoCredit = str(d.photoCredit); p.photoStatus = ["Authenticated", "Disputed", "Unverified"].includes(d.photoStatus) ? d.photoStatus : "Unverified";
+  p.visited = d.visited === true; p.visitedDate = str(d.visitedDate); p.visitNote = str(d.visitNote);
+  p.by = year(p.born); p.dy = year(p.died);
+  return p;
+}
+function normTown(id, d) { return { id, visited: d.visited === true, visitedDate: str(d.visitedDate), visitNote: str(d.visitNote), name: str(d.name), state: str(d.state).toUpperCase().slice(0, 2), founded: str(d.founded), knownFor: str(d.knownFor), summary: str(d.summary) }; }
+function normEvent(id, d) { return { id, name: str(d.name), kind: EVENT_KINDS.includes(d.kind) ? d.kind : "Other", date: str(d.date), year: year(d.year ?? d.date), place: str(d.place), state: str(d.state).toUpperCase().slice(0, 2), town: str(d.town), participants: arr(d.participants), summary: str(d.summary) }; }
+function normTrail(id, d) {
+  const srcs = (Array.isArray(d.sources) ? d.sources : []).map(s => typeof s === "string" ? { title: s, url: safeUrl(s) } : { title: str(s?.title) || str(s?.url), url: safeUrl(str(s?.url)) }).filter(s => s.title);
+  return { id, name: str(d.name), aka: str(d.aka), years: str(d.years), start: str(d.start), end: str(d.end), length: str(d.length), cattle: str(d.cattle), namedFor: str(d.namedFor), summary: str(d.summary), history: str(d.history), notes: str(d.notes), stops: arr(d.stops), states: arr(d.states), namesakes: arr(d.namesakes), sources: srcs, y0: year(d.years) };
+}
+function normGang(id, d) { return { id, name: str(d.name), kind: GANG_KINDS.includes(d.kind) ? d.kind : "Other", years: str(d.years), region: str(d.region), members: arr(d.members), summary: str(d.summary) }; }
+
+/* ---------- Indexes ---------- */
+function erasForSpan(a, b) {
+  if (a == null || b == null) return [];
+  if (b < a) [a, b] = [b, a];
+  if (b < 1868) return ["pre"];
+  if (a > 1912) return ["post"];
+  const out = [];
+  ERAS.forEach(e => {
+    const lo = Math.max(a, e.from), hi = Math.min(b, e.to);
+    const inside = a >= e.from && b <= e.to;
+    if (e.id === "pre") return;
+    if (e.id === "post") { if (hi - lo >= 3) out.push(e.id); return; }
+    if (inside || hi - lo >= 3 || (a === b && a >= e.from && a < e.to)) out.push(e.id);
+  });
+  const endEra = ERAS.find(e => e.id !== "pre" && b >= e.from && b < e.to);
+  if (endEra && !out.includes(endEra.id)) out.push(endEra.id);
+  out.sort((x, y) => ERA[x].from - ERA[y].from);
+  if (!out.length) { const k = Math.round((a + b) / 2); const e = ERAS.find(e => k >= e.from && k < e.to); if (e) out.push(e.id); }
+  return out;
+}
+const VIOLENT = /gun|hang|lynch|blow|stab/i;
+function personEras(p, evs) {
+  if (p.eraOverride.length) return p.eraOverride;
+  const ys = evs.map(e => e.year).filter(Boolean);
+  if (p.dy && VIOLENT.test(p.cause)) ys.push(p.dy);
+  let start = p.by ? p.by + 21 : null, end = null;
+  if (ys.length) { start = start == null ? Math.min(...ys) : Math.min(start, Math.min(...ys)); end = Math.max(...ys); }
+  else if (start != null) end = p.dy ? Math.min(p.dy, start + 30) : start + 30;
+  else if (p.dy) { start = p.dy - 15; end = p.dy; }
+  if (start != null && end != null && start > end) start = end;
+  const span = erasForSpan(start, end);
+  if (span.length) return span;
+  return [...new Set((idx.pGangs?.[p.id] || []).flatMap(g => g.eras || []))];
+}
+function eventEras(e) { return e.year ? erasForSpan(e.year, e.year) : []; }
+function gangEras(g) {
+  const ys = []; (g.years.match(/\d{4}s?/g) || []).forEach(m => { const y = +m.slice(0, 4); ys.push(y); if (m.endsWith("s")) ys.push(y + 9); });
+  return ys.length ? erasForSpan(Math.min(...ys), Math.max(...ys)) : [];
+}
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MON3 = MONTHS.map(m => m.slice(0, 3).toLowerCase());
+const mdOf = (iso) => iso ? { y: +iso.slice(0, 4), m: +iso.slice(5, 7), d: +iso.slice(8, 10) } : null;
+function eventMD(e) { const m = (e.date || "").match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})\b/); if (!m) return null; const mi = MON3.indexOf(m[1].toLowerCase()); return mi < 0 ? null : { y: e.year, m: mi + 1, d: +m[2] }; }
+const fmtDate = (iso) => { const x = mdOf(iso); return x ? `${MONTHS[x.m - 1].slice(0, 3)} ${x.d}, ${x.y}` : ""; };
+function ageAt(b, d) { if (!b || !d) return null; const x = mdOf(b), y = mdOf(d); return y.y - x.y - ((y.m < x.m || (y.m === x.m && y.d < x.d)) ? 1 : 0); }
+const eraTags = (ids) => ids.map(id => `<span class="tag era-${id}">${esc(ERA[id].short)}</span>`).join("");
+function rebuild() {
+  const byId = {}; D.people.forEach(p => byId[p.id] = p);
+  const town = {}; D.towns.forEach(t => town[t.id] = t);
+  const event = {}; D.events.forEach(e => event[e.id] = e);
+  const gang = {}; D.gangs.forEach(g => gang[g.id] = g);
+  const pEvents = {}, pGangs = {};
+  D.events.forEach(e => e.participants.forEach(pid => (pEvents[pid] ||= []).push(e)));
+  D.gangs.forEach(g => g.members.forEach(pid => (pGangs[pid] ||= []).push(g)));
+  Object.values(pEvents).forEach(l => l.sort((a, b) => (a.year || 0) - (b.year || 0)));
+  D.gangs.forEach(g => g.eras = gangEras(g));
+  D.events.forEach(e => e.eras = eventEras(e));
+  idx.pGangs = pGangs;
+  D.people.forEach(p => p.eras = personEras(p, pEvents[p.id] || []));
+  const trail = {}, pTrails = {}, tTrails = {};
+  D.trails.forEach(r => {
+    trail[r.id] = r;
+    r.namesakes.forEach(pid => (pTrails[pid] ||= []).push(r));
+    r.townIds = [...new Set(r.stops.map(st => { const nm = st.split(/[,(]/)[0].trim().toLowerCase(); const t = D.towns.find(t => t.name.toLowerCase() === nm); return t?.id; }).filter(Boolean))];
+    r.townIds.forEach(tid => (tTrails[tid] ||= []).push(r));
+  });
+  idx = { byId, town, event, gang, pEvents, pGangs, trail, pTrails, tTrails };
+}
+function findPerson(text) {
+  if (!text) return null;
+  if (idx.byId?.[text]) return idx.byId[text];
+  const t = text.toLowerCase().replace(/\(.*?\)/g, "").trim();
+  if (t.length < 3) return null;
+  return D.people.find(p => p.name.toLowerCase() === t || (p.alias && p.alias.split(",").some(a => a.trim().toLowerCase() === t)) ||
+    (p.alias && (p.alias + " " + p.name.split(" ").pop()).toLowerCase() === t) ||
+    (t.split(" ").length >= 2 && p.name.toLowerCase().endsWith(" " + t.split(" ").slice(1).join(" ")) && p.name.toLowerCase().startsWith(t.split(" ")[0])) ||
+    (p.name.split(" ")[0] + " " + p.name.split(" ").pop()).toLowerCase() === t) || null;
+}
+function findGangByName(text) {
+  const t = text.toLowerCase().replace(/^the\s+/, "").trim();
+  return D.gangs.find(g => g.name.toLowerCase().replace(/^the\s+/, "") === t) || null;
+}
+function placeKey(loc) {
+  if (!loc) return null;
+  const t = loc.split(/[—;]/).pop().trim();
+  const m = t.match(/[,\s]([A-Z]{2})\.?$/);
+  if (m && STATES[m[1]]) return m[1];
+  if (/Indian Territory|Cherokee Nation/.test(t)) return "OK";
+  const tail = t.split(",").pop().trim().replace(/\.$/, "");
+  if (NAME2ABBR[tail]) return NAME2ABBR[tail];
+  if (/Wheeling, VA/.test(t)) return "VA";
+  const ab = ABROAD.find(a => t.includes(a));
+  if (ab) return ({ Ontario: "Canada", Quebec: "Canada", Sonora: "Mexico" })[ab] || ab;
+  return null;
+}
+function placeLinks(p) {
+  const out = [];
+  p.operating.forEach(s => { const k = NAME2ABBR[s] || placeKey(s) || (ABROAD.includes(s) ? s : null); if (k) out.push([k, "rode"]); });
+  [[p.birthPlace, "born"], [p.deathPlace, "died"], [p.resting, "buried"]].forEach(([loc, why]) => { const k = placeKey(loc); if (k) out.push([k, why]); });
+  return out;
+}
+const placeName = (k) => STATES[k] || k;
+function townPeople(t) {
+  const needle = `${t.name}, ${t.state}`.toLowerCase();
+  const res = { born: [], died: [], buried: [] };
+  D.people.forEach(p => {
+    if (p.birthPlace.toLowerCase().includes(needle)) res.born.push(p);
+    if (p.deathPlace.toLowerCase().includes(needle)) res.died.push(p);
+    if (p.resting.toLowerCase().includes(needle)) res.buried.push(p);
+  });
+  return res;
+}
+const townEvents = (t) => D.events.filter(e => e.town === t.id).sort((a, b) => (a.year || 0) - (b.year || 0));
+
+/* ---------- Small renderers ---------- */
+const pLink = (p, extra = "") => `<button class="plink" type="button" data-open="person:${esc(p.id)}">${esc(p.name)}${extra}</button>`;
+const lifeSpan = (p) => `<small>${p.by || "?"}–${p.dy || "?"}</small>`;
+const verdictTag = (v) => `<span class="verdict ${vClass(v)}">${esc(v)}</span>`;
+function linkedNames(list) {
+  if (!list.length) return "";
+  const items = list.map(x => { const m = findPerson(x); if (m) return `<button class="plink" type="button" data-open="person:${esc(m.id)}">${esc(x)}</button>`; const g = findGangByName(x); return g ? `<button class="plink" type="button" data-open="gang:${esc(g.id)}">${esc(x)}</button>` : esc(x); });
+  return items.length > 1 ? `<ul>${items.map(i => `<li>${i}</li>`).join("")}</ul>` : items[0];
+}
+function wireOpeners(root) {
+  $$("[data-open]", root).forEach(b => b.onclick = (e) => { e.stopPropagation(); const [k, id] = b.dataset.open.split(":"); openDrawer(k, id); });
+  $$("[data-place]", root).forEach(b => b.onclick = (e) => { e.stopPropagation(); closeDrawer(); ui.place = b.dataset.place; location.hash = "map"; route(); });
+}
+
+/* ---------- Stats ---------- */
+function renderStats() {
+  const ps = D.people;
+  if (!ps.length) { $("#stats").innerHTML = ""; return; }
+  const shot = ps.filter(p => /gun\s*shot/i.test(p.cause)).length;
+  const known = ps.filter(p => p.by && p.dy);
+  const avg = known.length ? Math.round(known.reduce((a, p) => a + (p.dy - p.by), 0) / known.length) : "–";
+  $("#stats").innerHTML =
+    `<span><b>${ps.length}</b>people</span>` +
+    ROLES.map(r => `<span><i class="dot" style="background:var(${ROLE_VAR[r]})"></i><b>${ps.filter(p => roleOf(p) === r).length}</b>${PLURAL[r]}</span>`).join("") +
+    `<span><b>${D.events.length}</b>events</span><span><b>${D.towns.length}</b>towns</span><span><b>${D.gangs.length}</b>gangs &amp; posses</span>` +
+    `<span><b>${shot}</b>died by the gun</span><span><b>${avg}</b>average years lived</span>`;
+}
+
+/* ---------- People ---------- */
+function filteredPeople() {
+  const q = ui.q.toLowerCase();
+  const list = D.people.filter(p => {
+    if (ui.roles.size && !ui.roles.has(roleOf(p))) return false;
+    if (ui.cause && p.cause !== ui.cause) return false;
+    if (ui.state && !placeLinks(p).some(([s]) => s === ui.state)) return false;
+    if (ui.gang && !(idx.pGangs[p.id] || []).some(g => g.id === ui.gang)) return false;
+    if (ui.era && !p.eras.includes(ui.era)) return false;
+    if (ui.visited && !p.visited) return false;
+    if (q) {
+      const hay = [p.name, p.alias, p.birthPlace, p.deathPlace, p.resting, p.cause, p.notes, p.bio, ...MULTI.flatMap(k => p[k]), ...p.legends.map(l => l.text)].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const key = { name: p => p.name.split(" ").pop() + p.name, born: p => p.by ?? 9999, died: p => p.dy ?? 9999, age: p => (p.by && p.dy) ? -(p.dy - p.by) : 1 }[ui.sort];
+  return list.sort((a, b) => { const x = key(a), y = key(b); return x < y ? -1 : x > y ? 1 : 0; });
+}
+function renderPeople(focusSearch) {
+  const causes = [...new Set(D.people.map(p => p.cause).filter(Boolean))].sort();
+  const places = [...new Set(D.people.flatMap(p => placeLinks(p).map(x => x[0])))].sort((a, b) => placeName(a).localeCompare(placeName(b)));
+  const list = filteredPeople();
+  $("#view").innerHTML = `
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Search names, places, incidents, legends…" value="${esc(ui.q)}" aria-label="Search people">
+      <select id="fState" aria-label="Filter by place"><option value="">Any place</option>${places.map(s => `<option value="${esc(s)}" ${s === ui.state ? "selected" : ""}>${esc(placeName(s))}</option>`).join("")}</select>
+      <select id="fGang" aria-label="Filter by gang or posse"><option value="">Any gang or posse</option>${[...D.gangs].sort((a, b) => a.name.localeCompare(b.name)).map(g => `<option value="${esc(g.id)}" ${g.id === ui.gang ? "selected" : ""}>${esc(g.name)}</option>`).join("")}</select>
+      <select id="fEra" aria-label="Filter by era"><option value="">Any era</option>${ERAS.map(e => `<option value="${e.id}" ${e.id === ui.era ? "selected" : ""}>${e.label} · ${D.people.filter(p => p.eras.includes(e.id)).length}</option>`).join("")}</select>
+      <select id="fCause" aria-label="Filter by cause of death"><option value="">Any cause of death</option>${causes.map(s => `<option ${s === ui.cause ? "selected" : ""}>${esc(s)}</option>`).join("")}</select>
+      <select id="fSort" aria-label="Sort"><option value="name">Sort by surname</option><option value="born">Sort by birth year</option><option value="died">Sort by death year</option><option value="age">Longest lived first</option></select>
+    </div>
+    <div class="toolbar"><div class="chips">${ROLES.map(r => `<button class="chip" type="button" data-role="${r}" aria-pressed="${ui.roles.has(r)}"><i class="dot" style="background:var(${ROLE_VAR[r]})"></i>${PLURAL[r]}</button>`).join("")}${D.people.some(p => p.visited) ? `<button class="chip visit-chip" type="button" id="fVisited" aria-pressed="${ui.visited}">✓ Graves I've visited · ${D.people.filter(p => p.visited).length}</button>` : ""}</div></div>
+    <div class="count">${list.length === D.people.length ? `All ${D.people.length} people` : `${list.length} of ${D.people.length} people`}</div>
+    ${list.length ? `<div class="grid">${list.map(card).join("")}</div>` : `<div class="notice">No one matches. Clear a filter or try another search.</div>`}`;
+  $("#fSort").value = ui.sort;
+  const q = $("#q");
+  if (focusSearch) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+  q.addEventListener("input", () => { ui.q = q.value; renderPeople(true); });
+  $("#fState").onchange = e => { ui.state = e.target.value; renderPeople(); };
+  $("#fGang").onchange = e => { ui.gang = e.target.value; renderPeople(); };
+  $("#fEra").onchange = e => { ui.era = e.target.value; renderPeople(); };
+  $("#fCause").onchange = e => { ui.cause = e.target.value; renderPeople(); };
+  $("#fSort").onchange = e => { ui.sort = e.target.value; renderPeople(); };
+  if ($("#fVisited")) $("#fVisited").onclick = () => { ui.visited = !ui.visited; renderPeople(); };
+  $$(".chip[data-role]").forEach(b => b.onclick = () => { const r = b.dataset.role; ui.roles.has(r) ? ui.roles.delete(r) : ui.roles.add(r); renderPeople(); });
+  $$(".card[data-id]").forEach(c => c.onclick = () => openDrawer("person", c.dataset.id));
+}
+function card(p) {
+  const age = (p.by && p.dy) ? `aged ${p.dy - p.by}` : "";
+  const tags = p.incidents.slice(0, 2);
+  return `<button class="card" type="button" data-id="${esc(p.id)}" style="--role:${roleColor(p)}">
+    <span class="role">${esc(roleOf(p))}${p.visited ? `<span class="visited-badge" title="I've visited this grave">✓ Visited</span>` : ""}</span>
+    <h3>${esc(p.name)}</h3>
+    ${p.alias ? `<div class="alias">“${esc(p.alias)}”</div>` : ""}
+    <div class="years"><span>${esc(p.born || "?")} — ${esc(p.died || "?")}</span><span>${age}</span></div>
+    ${p.cause || p.deathPlace ? `<div class="end">${p.cause ? `<b>${esc(p.cause)}</b>` : ""}${p.cause && p.deathPlace ? " · " : ""}${esc(p.deathPlace)}</div>` : ""}
+    <div class="tags">${eraTags(p.eras)}${tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+  </button>`;
+}
+
+/* ---------- Drawer ---------- */
+let drawerState = null;
+function openDrawer(kind, id) {
+  const fn = { person: drawerPerson, town: drawerTown, event: drawerEvent, gang: drawerGang, trail: drawerTrail }[kind];
+  if (!fn) return;
+  const html = fn(id); if (!html) return;
+  drawerState = { kind, id };
+  const d = $("#drawer");
+  d.innerHTML = `<button class="close" type="button" id="drClose" aria-label="Close">×</button>` + html;
+  d.classList.add("open"); d.setAttribute("aria-hidden", "false"); $("#scrim").classList.add("open");
+  d.scrollTop = 0;
+  $("#drClose").focus();
+  $("#drClose").onclick = closeDrawer;
+  wireOpeners(d);
+  const ed = $("#drEdit"), del = $("#drDel"), po = $("#drPoster");
+  if (ed) ed.onclick = () => openForm(kind, id);
+  if (del) del.onclick = (e) => confirmDelete(e.currentTarget, kind, id);
+  if (po) po.onclick = () => openPoster(id);
+}
+function closeDrawer() { const d = $("#drawer"); d.classList.remove("open"); d.setAttribute("aria-hidden", "true"); $("#scrim").classList.remove("open"); drawerState = null; }
+$("#scrim").onclick = closeDrawer;
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#formDlg").open && !$("#posterDlg").open) closeDrawer(); });
+const actions = (extra = "") => (canWrite && db ? `<div class="dr-actions">${extra}<button class="btn ghost" type="button" id="drEdit">Edit</button><button class="btn danger" type="button" id="drDel">Delete</button></div>` : (extra ? `<div class="dr-actions">${extra}</div>` : ""));
+const row = (k, v) => `<dt>${k}</dt><dd>${v || `<span class="muted">—</span>`}</dd>`;
+function sourcesBlock(list) {
+  return `<h4>Sources</h4>` + (list.length ? `<ul>${list.map(s => `<li>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>` : esc(s.title)}</li>`).join("")}</ul>` : `<p class="muted">No source recorded yet.${canWrite && db ? " Add one with Edit." : ""}</p>`);
+}
+function drawerPerson(id) {
+  const p = idx.byId[id]; if (!p) return "";
+  const knownTo = D.people.filter(o => o.id !== p.id && [...o.associates, ...o.responsible].some(a => findPerson(a)?.id === p.id));
+  const evs = idx.pEvents[p.id] || [], gs = idx.pGangs[p.id] || [];
+  $("#drawer").style.setProperty("--role", roleColor(p));
+  return `
+    <div class="dr-head"><div class="role">${esc(roleOf(p))}</div><h2>${esc(p.name)}</h2>${p.alias ? `<div class="alias">“${esc(p.alias)}”</div>` : ""}</div>
+    <div class="dr-body">${p.visited ? visitBlock(p, "grave") : ""}${p.bio ? `<div class="bio">${p.bio.split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("")}</div>` : ""}<dl class="ledger">
+      ${row("Born", esc([p.birthDate ? fmtDate(p.birthDate) : p.born, p.birthPlace].filter(Boolean).join(" · ")))}
+      ${row("Died", esc([p.deathDate ? fmtDate(p.deathDate) : p.died, p.deathPlace].filter(Boolean).join(" · ")) + (p.by && p.dy ? ` <span class="muted">(aged ${ageAt(p.birthDate, p.deathDate) ?? (p.dy - p.by)})</span>` : ""))}
+      ${row("Cause of death", esc(p.cause))}
+      ${row("Era", eraTags(p.eras) + (p.eraOverride.length ? "" : ` <span class="muted" style="font-size:14px">worked out from dates</span>`))}
+      ${row("Responsible", linkedNames(p.responsible))}
+      ${row("Resting place", esc(p.resting))}
+      ${row("Operated in", p.operating.map(s => { const k = NAME2ABBR[s] || placeKey(s); return k ? `<button class="plink" type="button" data-place="${esc(k)}">${esc(s)}</button>` : esc(s); }).join(", "))}
+      ${row("Associates", linkedNames(p.associates))}
+      ${row("Gangs & posses", gs.map(g => `<button class="plink" type="button" data-open="gang:${esc(g.id)}">${esc(g.name)}</button>`).join(", "))}
+      ${row("Incidents", p.incidents.length ? `<ul>${p.incidents.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "")}
+      ${row("Weapons", p.weapons.length ? `<ul>${p.weapons.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "")}
+      ${row("Legends", p.legends.length ? `<ul>${p.legends.map(l => `<li>${esc(l.text)}${verdictTag(l.verdict)}</li>`).join("")}</ul>` : "")}
+      ${(idx.pTrails[p.id] || []).length ? row("Trail named for", idx.pTrails[p.id].map(r => `<button class="plink" type="button" data-open="trail:${esc(r.id)}">${esc(r.name)}</button>`).join(", ")) : ""}
+      ${knownTo.length ? row("Named in", knownTo.map(o => pLink(o)).join(", ")) : ""}
+    </dl>
+    ${evs.length ? `<h4>Events</h4><div class="plinks">${evs.map(e => `<button class="plink" type="button" data-open="event:${esc(e.id)}">${esc(e.name)} <small>${e.year || ""}</small></button>`).join("")}</div>` : ""}
+    ${p.notes ? `<div class="note"><b>Clerk's note:</b> ${esc(p.notes)}</div>` : ""}
+    ${p.dateNote ? `<div class="note"><b>On the dates:</b> ${esc(p.dateNote)}</div>` : ""}
+    ${sourcesBlock(p.sources)}
+    </div>
+    ${actions(`<button class="btn" type="button" id="drPoster">${roleOf(p) === "Outlaw" ? "Wanted poster" : "Poster"}</button>`)}`;
+}
+function visitBlock(x, what) {
+  return `<div class="visit"><b>✓ I've visited this ${what}${x.visitedDate ? ` · ${esc(x.visitedDate)}` : ""}</b>${x.visitNote ? `<span>${esc(x.visitNote)}</span>` : ""}</div>`;
+}
+function drawerTown(id) {
+  const t = idx.town[id]; if (!t) return "";
+  const tp = townPeople(t), evs = townEvents(t);
+  $("#drawer").style.setProperty("--role", "var(--brass)");
+  const grp = (l, label) => l.length ? `<h4>${label} · ${l.length}</h4><div class="plinks">${l.map(p => pLink(p, " " + lifeSpan(p))).join("")}</div>` : "";
+  return `<div class="dr-head"><div class="role">Town · ${esc(placeName(t.state))}</div><h2>${esc(t.name)}</h2><div class="alias">${esc(t.knownFor)}</div></div>
+    <div class="dr-body">${t.visited ? visitBlock(t, "place") : ""}<dl class="ledger">${row("Founded", esc(t.founded))}${row("State", `<button class="plink" type="button" data-place="${esc(t.state)}">${esc(placeName(t.state))}</button>`)}</dl>
+    <p>${esc(t.summary)}</p>
+    ${evs.length ? `<h4>Events here · ${evs.length}</h4><div class="plinks">${evs.map(e => `<button class="plink" type="button" data-open="event:${esc(e.id)}">${esc(e.name)} <small>${e.year || ""}</small></button>`).join("")}</div>` : ""}
+    ${(idx.tTrails[t.id] || []).length ? `<h4>On the cattle trails</h4><div class="plinks">${idx.tTrails[t.id].map(r => `<button class="plink" type="button" data-open="trail:${esc(r.id)}">${esc(r.name)} <small>${esc(r.years)}</small></button>`).join("")}</div>` : ""}
+    ${grp(tp.born, "Born here")}${grp(tp.died, "Died here")}${grp(tp.buried, "Buried here")}
+    </div>${actions()}`;
+}
+function drawerEvent(id) {
+  const e = idx.event[id]; if (!e) return "";
+  $("#drawer").style.setProperty("--role", "var(--accent)");
+  const ps = e.participants.map(pid => idx.byId[pid]).filter(Boolean);
+  const t = e.town && idx.town[e.town];
+  return `<div class="dr-head"><div class="role">${esc(e.kind)}</div><h2>${esc(e.name)}</h2><div class="alias">${esc(e.date)}</div></div>
+    <div class="dr-body"><dl class="ledger">
+      ${row("Place", esc(e.place) + (t ? ` · <button class="plink" type="button" data-open="town:${esc(t.id)}">${esc(t.name)}</button>` : ""))}
+      ${row("Year", esc(e.year || ""))}
+    </dl><p>${esc(e.summary)}</p>
+    <h4>People involved · ${ps.length}</h4><div class="plinks">${ps.map(p => pLink(p, " " + lifeSpan(p))).join("") || `<span class="muted">None recorded</span>`}</div>
+    </div>${actions()}`;
+}
+function drawerGang(id) {
+  const g = idx.gang[id]; if (!g) return "";
+  $("#drawer").style.setProperty("--role", "var(--brass)");
+  const ms = g.members.map(pid => idx.byId[pid]).filter(Boolean);
+  const evs = D.events.filter(e => e.participants.some(pid => g.members.includes(pid))).sort((a, b) => (a.year || 0) - (b.year || 0));
+  return `<div class="dr-head"><div class="role">${esc(g.kind)}</div><h2>${esc(g.name)}</h2><div class="alias">${esc(g.years)} · ${esc(g.region)}</div></div>
+    <div class="dr-body"><p>${esc(g.summary)}</p>
+    <h4>Members and their fates · ${ms.length}</h4>
+    <dl class="ledger">${ms.map(p => `<dt>${pLink(p)}</dt><dd>${esc([p.cause, p.died].filter(Boolean).join(", ")) || `<span class="muted">—</span>`}</dd>`).join("")}</dl>
+    ${evs.length ? `<h4>Events involving members · ${evs.length}</h4><div class="plinks">${evs.map(e => `<button class="plink" type="button" data-open="event:${esc(e.id)}">${esc(e.name)} <small>${e.year || ""}</small></button>`).join("")}</div>` : ""}
+    </div>${actions()}`;
+}
+function routeStrip(r, linkTowns) {
+  return `<ol class="route">${r.stops.map(st => { const nm = st.split(/[,(]/)[0].trim().toLowerCase(); const t = D.towns.find(t => t.name.toLowerCase() === nm);
+    return `<li>${t && linkTowns ? `<button class="plink" type="button" data-open="town:${esc(t.id)}">${esc(st)}</button>` : esc(st)}</li>`; }).join("")}</ol>`;
+}
+function drawerTrail(id) {
+  const r = idx.trail[id]; if (!r) return "";
+  $("#drawer").style.setProperty("--role", "var(--brass)");
+  const ns = r.namesakes.map(pid => idx.byId[pid]).filter(Boolean);
+  const paras = (txt) => txt.split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
+  return `<div class="dr-head"><div class="role">Cattle trail · ${esc(r.years)}</div><h2>${esc(r.name)}</h2>${r.aka ? `<div class="alias">Also called ${esc(r.aka)}</div>` : ""}</div>
+    <div class="dr-body">${r.history ? `<div class="bio">${paras(r.history)}</div>` : (r.summary ? `<p>${esc(r.summary)}</p>` : "")}
+    <h4>The route</h4>${routeStrip(r, true)}
+    <dl class="ledger">
+      ${row("Years in use", esc(r.years))}
+      ${row("From / to", esc([r.start, r.end].filter(Boolean).join(" → ")))}
+      ${row("Length", esc(r.length))}
+      ${row("Cattle driven", esc(r.cattle))}
+      ${row("States", r.states.map(s => { const k = NAME2ABBR[s] || placeKey(s); return k ? `<button class="plink" type="button" data-place="${esc(k)}">${esc(s)}</button>` : esc(s); }).join(", "))}
+      ${row("Named for", esc(r.namedFor) + (ns.length ? `<div class="plinks" style="margin-top:6px">${ns.map(p => pLink(p, " " + lifeSpan(p))).join("")}</div>` : ""))}
+    </dl>
+    ${r.notes ? `<div class="note"><b>Clerk's note:</b> ${esc(r.notes)}</div>` : ""}
+    ${sourcesBlock(r.sources)}
+    </div>${actions()}`;
+}
+function renderTrails() {
+  const list = [...D.trails].sort((a, b) => (a.y0 || 0) - (b.y0 || 0) || a.name.localeCompare(b.name));
+  $("#view").innerHTML = `<p class="section-intro">The great cattle trails that carried Texas Longhorns north to the railheads and ranges, oldest first, with the men they were named for and the towns along the way.</p>
+    ${list.length ? `<div class="trail-list">${list.map(r => {
+      const ns = r.namesakes.map(pid => idx.byId[pid]).filter(Boolean);
+      return `<div class="card trail" role="button" tabindex="0" data-trail="${esc(r.id)}" style="--role:var(--brass)">
+        <span class="role">${esc(r.years)}${r.length ? " · " + esc(r.length) : ""}</span>
+        <h3>${esc(r.name)}</h3>${r.aka ? `<div class="alias">Also called ${esc(r.aka)}</div>` : ""}
+        ${routeStrip(r, false)}
+        <p>${esc(r.summary)}</p>
+        <div class="plinks">${ns.length ? `<span class="muted" style="font-size:14px;margin-right:4px">Named for</span>${ns.map(p => pLink(p)).join("")}` : (r.namedFor ? `<span class="muted" style="font-size:14px">Named for: ${esc(r.namedFor)}</span>` : "")}</div></div>`;
+    }).join("")}</div>` : `<div class="notice">No trails yet. Use “Add a trail”.</div>`}`;
+  $$(".card[data-trail]").forEach(c => { c.onclick = () => openDrawer("trail", c.dataset.trail); c.onkeydown = (e) => { if (e.key === "Enter") openDrawer("trail", c.dataset.trail); }; });
+  wireOpeners($("#view"));
+}
+async function confirmDelete(btn, kind, id) {
+  if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = "Click again to delete"; return; }
+  const coll = { person: "people", town: "towns", event: "events", gang: "gangs", trail: "trails" }[kind];
+  try { await db.collection(coll).doc(id).delete(); closeDrawer(); toast("Entry removed"); }
+  catch (e) { toast("Couldn't delete: " + (e?.message || "try again")); }
+}
+
+/* ---------- Poster ---------- */
+function openPoster(id) {
+  const p = idx.byId[id]; if (!p) return;
+  const r = roleOf(p);
+  const head = { Outlaw: "WANTED", Lawman: "LAWMAN", Gunfighter: "DANGEROUS MAN", "Frontier Figure": "NOTICE" }[r];
+  const sub = { Outlaw: "for the following deeds", Lawman: "by order of the law, of record", Gunfighter: "known to the territory for", "Frontier Figure": "of public interest, known for" }[r];
+  const initials = p.name.split(" ").filter(w => /^[A-Z]/.test(w)).map(w => w[0]).slice(0, 2).join("");
+  const deeds = p.incidents.slice(0, 3).join(" · ") || "Deeds unrecorded";
+  const rode = [...(idx.pGangs[p.id] || []).map(g => g.name), ...p.associates].slice(0, 3).join(", ");
+  const dlg = $("#posterDlg");
+  dlg.innerHTML = `<div class="poster">
+    <button class="poster-close" type="button" id="posterClose" aria-label="Close poster">×</button>
+    <div class="hd ${head.length > 8 ? "small" : ""}">${head}</div>
+    <div class="for">${sub.toUpperCase()}</div>
+    <div class="txt">${esc(deeds)}</div>
+    <div class="rule"></div>
+    ${p.photoId && (!PUB || PUB.photos?.[p.photoId]) ? `<div class="frame photo"><img src="${esc(PUB ? (PUB.photos?.[p.photoId] || "") : "/_blob/" + p.photoId)}" alt="Photograph of ${esc(p.name)}"></div><div class="cred">${p.photoCredit ? "Photo: " + esc(p.photoCredit) + " · " : ""}<span class="pstat ${p.photoStatus.toLowerCase()}">${p.photoStatus === "Authenticated" ? "Authenticated likeness" : p.photoStatus === "Disputed" ? "Disputed likeness" : "Unverified likeness"}</span></div>` : `<div class="frame" aria-hidden="true">${esc(initials)}</div>`}
+    <div class="nm">${esc(p.name)}</div>
+    ${p.alias ? `<div class="al">alias “${esc(p.alias)}”</div>` : ""}
+    <div class="rule"></div>
+    ${p.born || p.birthPlace ? `<div class="txt"><b>BORN</b> ${esc([p.born, p.birthPlace].filter(Boolean).join(", "))}</div>` : ""}
+    ${p.operating.length ? `<div class="txt"><b>KNOWN IN</b> ${esc(p.operating.join(", "))}</div>` : ""}
+    ${rode ? `<div class="txt"><b>RODE WITH</b> ${esc(rode)}</div>` : ""}
+    ${p.weapons.length ? `<div class="txt"><b>CARRIED</b> ${esc(p.weapons[0])}</div>` : ""}
+    <div class="rule"></div>
+    <div class="txt"><b>FATE</b> ${esc([p.cause, p.deathPlace, p.died].filter(x => x && x !== "Unknown").join(", ") || "Unknown")}</div>
+    <div class="foot">FROM THE RECORDS OF THE FRONTIER LEDGER</div>
+  </div>
+  ${assets && canWrite && db ? `<form class="photo-ed" id="photoEd">
+    <div class="pe-title">${p.photoId ? "Change the photo" : "Add a photo to this poster"}</div>
+    <label>Image file<input type="file" id="peFile" accept="image/*"></label>
+    <label>Credit or source<input id="peCredit" value="${esc(p.photoCredit)}" placeholder="Library of Congress / my photo, 2026"></label>
+    <label>Is it really him (or her)?<select id="peStat">${["Authenticated", "Disputed", "Unverified"].map(o => `<option ${o === p.photoStatus ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+    <div class="pe-act"><button class="btn" type="submit" id="peSave">Save</button>${p.photoId ? `<button class="btn danger" type="button" id="peDel">Remove photo</button>` : ""}<span class="pe-msg" id="peMsg" role="status"></span></div>
+  </form>` : ""}`;
+  if (!dlg.open) dlg.showModal();
+  $("#posterClose").onclick = () => dlg.close();
+  const ed = $("#photoEd");
+  if (ed) {
+    const msg = (m) => $("#peMsg").textContent = m;
+    ed.onsubmit = async (e) => {
+      e.preventDefault();
+      const f = $("#peFile").files[0];
+      if (!f && !p.photoId) { msg("Choose an image first."); return; }
+      if (f && f.size > 20 * 1024 * 1024) { msg("That image is over 20 MB. Try a smaller one."); return; }
+      $("#peSave").disabled = true; msg(f ? "Uploading…" : "Saving…");
+      try {
+        const upd = { photoCredit: $("#peCredit").value.trim(), photoStatus: $("#peStat").value };
+        let old = "";
+        if (f) { const r = await assets.upload(f); upd.photoId = r.id; old = p.photoId; }
+        await db.collection("people").doc(p.id).update(upd);
+        if (old) { try { await assets.delete(old); } catch {} }
+        msg("Saved."); setTimeout(() => { if (dlg.open) openPoster(p.id); }, 400);
+      } catch (err) { msg("Couldn't save the photo: " + (err?.message || "try again")); }
+      finally { const b = $("#peSave"); if (b) b.disabled = false; }
+    };
+    const del = $("#peDel");
+    if (del) del.onclick = async () => {
+      if (del.dataset.armed !== "1") { del.dataset.armed = "1"; del.textContent = "Click again to remove"; return; }
+      try { const old = p.photoId; await db.collection("people").doc(p.id).update({ photoId: "", photoCredit: "", photoStatus: "Unverified" }); try { await assets.delete(old); } catch {} msg("Removed."); setTimeout(() => { if (dlg.open) openPoster(p.id); }, 400); }
+      catch (err) { msg("Couldn't remove it: " + (err?.message || "try again")); }
+    };
+  }
+  dlg.onclick = (e) => { if (e.target === dlg) dlg.close(); };
+}
+
+/* ---------- Events ---------- */
+function renderEvents() {
+  const list = D.events.filter(e => (!ui.evKind || e.kind === ui.evKind) && (!ui.evEra || e.eras.includes(ui.evEra))).sort((a, b) => (a.year || 0) - (b.year || 0) || a.name.localeCompare(b.name));
+  const kinds = EVENT_KINDS.filter(k => D.events.some(e => e.kind === k));
+  $("#view").innerHTML = `<p class="section-intro">Gunfights, robberies, killings and manhunts, in order. Each one links to the people involved and the town where it happened.</p>
+    <div class="toolbar"><select id="evEra" aria-label="Filter events by era"><option value="">Any era</option>${ERAS.map(e => `<option value="${e.id}" ${e.id === ui.evEra ? "selected" : ""}>${e.label} · ${D.events.filter(x => x.eras.includes(e.id)).length}</option>`).join("")}</select><div class="chips">${kinds.map(k => `<button class="chip" type="button" data-kind="${k}" aria-pressed="${ui.evKind === k}">${k} · ${D.events.filter(e => e.kind === k).length}</button>`).join("")}</div></div>
+    ${list.length ? `<div class="ev-list">${list.map(e => {
+      const ps = e.participants.map(pid => idx.byId[pid]).filter(Boolean);
+      const t = e.town && idx.town[e.town];
+      return `<div class="ev" role="button" tabindex="0" data-ev="${esc(e.id)}"><div class="yr">${e.year || "?"}</div><div>
+        <h3>${esc(e.name)}</h3>
+        <div class="meta"><span class="kind">${esc(e.kind)}</span>${e.eras.map(id => `<span class="kind era-${id}">${esc(ERA[id].short)}</span>`).join("")}${esc(e.date)} · ${t ? `<button class="plink" type="button" data-open="town:${esc(t.id)}">${esc(e.place)}</button>` : esc(e.place)}</div>
+        <p>${esc(e.summary)}</p>
+        <div class="plinks">${ps.map(p => pLink(p)).join("")}</div></div></div>`;
+    }).join("")}</div>` : `<div class="notice">No events recorded yet. Use “Add an event”.</div>`}`;
+  $("#evEra").onchange = e => { ui.evEra = e.target.value; renderEvents(); };
+  $$(".chip[data-kind]").forEach(b => b.onclick = () => { ui.evKind = ui.evKind === b.dataset.kind ? "" : b.dataset.kind; renderEvents(); });
+  $$(".ev").forEach(c => { c.onclick = () => openDrawer("event", c.dataset.ev); c.onkeydown = (e) => { if (e.key === "Enter") openDrawer("event", c.dataset.ev); }; });
+  wireOpeners($("#view"));
+}
+
+/* ---------- Towns ---------- */
+function renderTowns() {
+  const list = [...D.towns].sort((a, b) => a.name.localeCompare(b.name));
+  $("#view").innerHTML = `<p class="section-intro">Boomtowns, cow towns and court towns. Each town gathers the people born, killed or buried there and the events that happened in it.</p>
+    ${list.length ? `<div class="grid">${list.map(t => {
+      const tp = townPeople(t), n = new Set([...tp.born, ...tp.died, ...tp.buried].map(p => p.id)).size, ne = townEvents(t).length;
+      return `<button class="card" type="button" data-town="${esc(t.id)}" style="--role:var(--brass)">
+        <span class="role">${esc(placeName(t.state))} · founded ${esc(t.founded || "?")}${t.visited ? `<span class="visited-badge">✓ Visited</span>` : ""}</span>
+        <h3>${esc(t.name)}</h3><div class="alias">${esc(t.knownFor)}</div>
+        <p>${esc(t.summary)}</p>
+        <div class="tags"><span class="tag">${n} ${n === 1 ? "person" : "people"}</span><span class="tag">${ne} ${ne === 1 ? "event" : "events"}</span></div></button>`;
+    }).join("")}</div>` : `<div class="notice">No towns yet. Use “Add a town”.</div>`}`;
+  $$(".card[data-town]").forEach(c => c.onclick = () => openDrawer("town", c.dataset.town));
+}
+
+/* ---------- Gangs ---------- */
+function renderGangs() {
+  const order = { "Outlaw gang": 0, "Con men": 1, "Posse": 2, "Lawmen": 3, "Other": 4 };
+  const list = [...D.gangs].sort((a, b) => order[a.kind] - order[b.kind] || a.name.localeCompare(b.name));
+  $("#view").innerHTML = `<p class="section-intro">Outlaw gangs and the posses and lawmen who hunted them, with every member who is in the ledger.</p>
+    ${list.length ? `<div class="grid">${list.map(g => {
+      const ms = g.members.map(pid => idx.byId[pid]).filter(Boolean);
+      const color = g.kind === "Posse" || g.kind === "Lawmen" ? "var(--lawman)" : g.kind === "Con men" ? "var(--brass)" : "var(--outlaw)";
+      return `<div class="card" role="button" tabindex="0" data-gang="${esc(g.id)}" style="--role:${color}">
+        <span class="role">${esc(g.kind)} · ${esc(g.years)}</span><div class="tags">${eraTags(g.eras)}</div><h3>${esc(g.name)}</h3><div class="alias">${esc(g.region)}</div>
+        <p>${esc(g.summary)}</p>
+        <div class="plinks">${ms.map(p => pLink(p)).join("")}</div></div>`;
+    }).join("")}</div>` : `<div class="notice">No gangs yet. Use “Add a gang or posse”.</div>`}`;
+  $$(".card[data-gang]").forEach(c => { c.onclick = () => openDrawer("gang", c.dataset.gang); c.onkeydown = (e) => { if (e.key === "Enter") openDrawer("gang", c.dataset.gang); }; });
+  wireOpeners($("#view"));
+}
+
+/* ---------- Map ---------- */
+function placeIndex() {
+  const map = new Map();
+  const add = (k) => { if (!map.has(k)) map.set(k, { people: new Map(), towns: [], events: [] }); return map.get(k); };
+  D.people.forEach(p => placeLinks(p).forEach(([k, why]) => { const m = add(k).people; if (!m.has(p.id)) m.set(p.id, new Set()); m.get(p.id).add(why); }));
+  D.towns.forEach(t => { if (STATES[t.state]) add(t.state).towns.push(t); });
+  D.events.forEach(e => { const k = e.state && STATES[e.state] ? e.state : placeKey(e.place); if (k) add(k).events.push(e); });
+  return map;
+}
+function renderMap() {
+  const pi = placeIndex();
+  const max = Math.max(1, ...[...pi.values()].map(v => v.people.size));
+  if (!ui.place || !pi.has(ui.place)) ui.place = [...pi.entries()].sort((a, b) => b[1].people.size - a[1].people.size)[0]?.[0] || "TX";
+  const C = 58, G = 4;
+  const fill = (n) => n ? `color-mix(in srgb, var(--brass) ${Math.round(18 + 70 * n / max)}%, var(--sheet))` : "var(--sheet)";
+  const ink = (n) => n / max > .55 ? "var(--paper)" : "var(--ink)";
+  const tiles = Object.entries(GRID).map(([ab, [c, r]]) => {
+    const n = pi.get(ab)?.people.size || 0;
+    return `<g class="tile ${ab === ui.place ? "sel" : ""}" data-st="${ab}" tabindex="0" role="button" aria-label="${STATES[ab]}: ${n} people">
+      <rect x="${c * (C + G)}" y="${r * (C + G)}" width="${C}" height="${C}" rx="2" fill="${fill(n)}"></rect>
+      <text x="${c * (C + G) + 7}" y="${r * (C + G) + 19}" font-size="15" fill="${ink(n)}">${ab}</text>
+      ${n ? `<text x="${c * (C + G) + C - 7}" y="${r * (C + G) + C - 9}" font-size="18" text-anchor="end" fill="${ink(n)}" style="font-family:var(--body);font-weight:700">${n}</text>` : ""}</g>`;
+  }).join("");
+  const abroad = [...pi.entries()].filter(([k]) => !STATES[k]);
+  const sel = pi.get(ui.place) || { people: new Map(), towns: [], events: [] };
+  const group = (why, label) => {
+    const ps = [...sel.people.entries()].filter(([, w]) => w.has(why)).map(([id]) => idx.byId[id]).filter(Boolean).sort((a, b) => (a.by || 0) - (b.by || 0));
+    return ps.length ? `<h4>${label} · ${ps.length}</h4><div class="plinks">${ps.map(p => pLink(p, " " + lifeSpan(p))).join("")}</div>` : "";
+  };
+  $("#view").innerHTML = `<div class="mapwrap">
+    <div><div class="map-card">
+      <svg viewBox="0 0 ${12 * (C + G)} ${8 * (C + G)}" role="group" aria-label="Map of states by number of people">${tiles}</svg>
+      <div class="map-key"><span>People tied to each state (rode, born, died or buried):</span><i style="background:${fill(0)}"></i>none <i style="background:${fill(max * .25)}"></i><i style="background:${fill(max * .6)}"></i><i style="background:${fill(max)}"></i>${max}</div>
+      ${abroad.length ? `<div class="abroad">Beyond the United States: ${abroad.map(([k, v]) => `<button class="chip" type="button" data-ab="${esc(k)}" aria-pressed="${k === ui.place}">${esc(k)} · ${v.people.size}</button>`).join("")}</div>` : ""}
+    </div><p class="muted" style="font-size:14px">Each square is a state, laid out roughly where it sits on the map. Indian Territory is counted with Oklahoma.</p></div>
+    <section class="place-detail"><h2>${esc(placeName(ui.place))}</h2><div class="muted">${sel.people.size} ${sel.people.size === 1 ? "person" : "people"} · ${sel.towns.length} towns · ${sel.events.length} events</div>
+      ${sel.towns.length ? `<h4>Towns · ${sel.towns.length}</h4><div class="plinks">${sel.towns.map(t => `<button class="plink" type="button" data-open="town:${esc(t.id)}">${esc(t.name)} <small>${esc(t.founded)}</small></button>`).join("")}</div>` : ""}
+      ${sel.events.length ? `<h4>Events · ${sel.events.length}</h4><div class="plinks">${sel.events.sort((a, b) => (a.year || 0) - (b.year || 0)).map(e => `<button class="plink" type="button" data-open="event:${esc(e.id)}">${esc(e.name)} <small>${e.year || ""}</small></button>`).join("")}</div>` : ""}
+      ${group("rode", "Rode or worked here")}${group("born", "Born here")}${group("died", "Died here")}${group("buried", "Buried here")}
+    </section></div>`;
+  $$(".tile").forEach(t => { const go = () => { ui.place = t.dataset.st; renderMap(); }; t.onclick = go; t.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } }; });
+  $$("[data-ab]").forEach(b => b.onclick = () => { ui.place = b.dataset.ab; renderMap(); });
+  wireOpeners($("#view"));
+}
+
+/* ---------- Timeline ---------- */
+function renderTimeline() {
+  const list = D.people.filter(p => p.by).sort((a, b) => a.by - b.by || (a.dy || 9999) - (b.dy || 9999));
+  const undated = D.people.length - list.length;
+  if (!list.length) { $("#view").innerHTML = `<div class="notice">No birth years yet.</div>`; return; }
+  const lo = Math.floor(Math.min(...list.map(p => p.by)) / 10) * 10;
+  const hi = Math.ceil(Math.max(...list.map(p => p.dy || p.by + 40), 1900) / 10) * 10;
+  const x = y => ((y - lo) / (hi - lo) * 100).toFixed(2) + "%";
+  const ticks = []; for (let y = lo; y <= hi; y += 10) ticks.push(y);
+  const marks = [[1890, "Frontier declared closed"]];
+  const overlay = `<div class="tl-band" style="left:${x(1861)};width:calc(${x(1865)} - ${x(1861)})"></div>` + marks.map(([y]) => `<div class="tl-mark" style="left:${x(y)}"></div>`).join("");
+  const evs = D.events.filter(e => e.year && e.year >= lo && e.year <= hi);
+  $("#view").innerHTML = `
+    <div class="tl-legend">${ROLES.map(r => `<span><i style="background:var(${ROLE_VAR[r]})"></i>${r}</span>`).join("")}
+      <span><i style="background:color-mix(in srgb, var(--brass) 25%, transparent)"></i>Civil War 1861–65</span>
+      <span><i style="border-left:1px dashed var(--accent);height:12px;width:1px;vertical-align:-2px"></i>Frontier declared closed 1890</span>
+      <span><i style="width:9px;height:9px;background:var(--accent);transform:rotate(45deg)"></i>Event (select for details)</span></div>
+    <div class="tl"><div class="tl-inner">
+      <div class="tl-row tl-evrow" style="cursor:default"><span class="nm muted" style="font-family:var(--label)">Era</span><div class="tl-track">${ERAS.filter(e => e.to > lo && e.from < hi).map(e => { const a = Math.max(lo, e.from), b = Math.min(hi, e.to); return `<div class="tl-era era-${e.id}" style="left:${x(a)};width:calc(${x(b)} - ${x(a)})">${esc(e.short)}</div>`; }).join("")}</div></div>
+      <div class="tl-axis"><span></span><div class="tl-track">${ticks.map((y, i) => `<span class="tl-tick" style="left:${x(y)};${i === ticks.length - 1 ? "transform:translateX(-100%)" : i === 0 ? "transform:none" : ""}">${y}</span>`).join("")}</div></div>
+      <div class="tl-row tl-evrow"><span class="nm muted" style="font-family:var(--label)">Events</span><div class="tl-track">${overlay}${evs.map(e => `<button class="tl-ev" type="button" data-open="event:${esc(e.id)}" style="left:${x(e.year)}" title="${e.year}: ${esc(e.name)}" aria-label="${e.year}: ${esc(e.name)}"></button>`).join("")}</div></div>
+      ${list.map(p => `<div class="tl-row" data-id="${esc(p.id)}" title="${esc(p.name)}: ${esc(p.born)}–${esc(p.died || "?")}" style="--role:${roleColor(p)}">
+          <span class="nm">${esc(p.name)}</span>
+          <div class="tl-track">${overlay}<div class="tl-bar ${p.dy ? "" : "open"}" style="left:${x(p.by)};width:calc(${x(p.dy || Math.min(p.by + 30, hi))} - ${x(p.by)})"></div>${p.dy ? `<div class="tl-end" style="left:${x(p.dy)}"></div>` : ""}</div>
+        </div>`).join("")}
+    </div></div>
+    ${undated ? `<p class="muted" style="margin-bottom:48px">${undated} ${undated === 1 ? "person has" : "people have"} no known birth year and ${undated === 1 ? "is" : "are"} left off the timeline.</p>` : `<div style="height:28px"></div>`}`;
+  $$(".tl-row[data-id]").forEach(r => r.onclick = () => openDrawer("person", r.dataset.id));
+  wireOpeners($("#view"));
+}
+
+/* ---------- Weapons ---------- */
+function weaponGroup(w) {
+  const s = w.toLowerCase();
+  if (/colt/.test(s)) return "Colt revolvers";
+  if (/smith|schofield/.test(s)) return "Smith & Wesson revolvers";
+  if (/winchester|marlin|rifle/.test(s)) return "Rifles";
+  if (/shotgun|coach gun/.test(s)) return "Shotguns";
+  if (/revolver|pistol/.test(s)) return "Other handguns";
+  return "Other";
+}
+function renderWeapons() {
+  const rows = D.people.flatMap(p => p.weapons.map(w => ({ w, p })));
+  const order = ["Colt revolvers", "Smith & Wesson revolvers", "Other handguns", "Rifles", "Shotguns", "Other"];
+  const by = {}; rows.forEach(r => (by[weaponGroup(r.w)] ||= []).push(r));
+  const without = D.people.filter(p => !p.weapons.length).length;
+  $("#view").innerHTML = `<p class="section-intro">The guns and other arms each person is known to have carried. ${rows.length} recorded for ${D.people.length - without} people; ${without} people have none recorded yet.</p>
+    ${rows.length ? `<div class="tablewrap"><table class="wtable"><thead><tr><th>Weapon</th><th>Carried by</th><th>Role</th></tr></thead><tbody>
+    ${order.filter(g => by[g]).map(g => `<tr class="grp"><td colspan="3">${g} <span class="muted" style="font-family:var(--label);font-size:14px">· ${by[g].length}</span></td></tr>` +
+      by[g].sort((a, b) => a.w.localeCompare(b.w)).map(r => `<tr><td>${esc(r.w)}</td><td>${pLink(r.p)}</td><td><span class="dot" style="background:${roleColor(r.p)}"></span>${esc(roleOf(r.p))}</td></tr>`).join("")).join("")}
+    </tbody></table></div>` : `<div class="notice">No weapons recorded yet. Add them to a person with Edit.</div>`}`;
+  wireOpeners($("#view"));
+}
+
+/* ---------- Connections ---------- */
+let net = null;
+function buildGraph() {
+  const nodes = [], nmap = {}, edges = [], seen = new Set();
+  const node = (key, label, kind, color) => { if (!nmap[key]) { nmap[key] = { key, label, kind, color, deg: 0, x: 0, y: 0, vx: 0, vy: 0 }; nodes.push(nmap[key]); } return nmap[key]; };
+  const edge = (a, b, type) => { if (a === b) return; const k = [a.key, b.key].sort().join("|") + type; if (seen.has(k)) return; seen.add(k); edges.push({ a, b, type }); a.deg++; b.deg++; };
+  D.people.forEach(p => {
+    const me = node("p:" + p.id, p.name, "person", ROLE_VAR[roleOf(p)]);
+    p.associates.forEach(a => { const o = findPerson(a); if (o) edge(me, node("p:" + o.id, o.name, "person", ROLE_VAR[roleOf(o)]), "assoc"); });
+    p.responsible.forEach(a => { const o = findPerson(a); if (o) edge(node("p:" + o.id, o.name, "person", ROLE_VAR[roleOf(o)]), me, "killed"); });
+  });
+  D.gangs.forEach(g => {
+    const gn = node("g:" + g.id, g.name, "gang", "--brass");
+    g.members.forEach(pid => { const p = idx.byId[pid]; if (p) edge(gn, node("p:" + p.id, p.name, "person", ROLE_VAR[roleOf(p)]), "member"); });
+  });
+  return { nodes: nodes.filter(n => n.deg > 0), edges };
+}
+function layout(g, W, H) {
+  const N = g.nodes.length; let s = 7;
+  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  g.nodes.forEach((n, i) => { const a = i / N * Math.PI * 2; n.x = W / 2 + Math.cos(a) * W * .3 + rnd() * 20; n.y = H / 2 + Math.sin(a) * H * .3 + rnd() * 20; });
+  for (let it = 0; it < 420; it++) tick(g, W, H, 1 - it / 420);
+}
+function tick(g, W, H, alpha) {
+  const ns = g.nodes;
+  for (let i = 0; i < ns.length; i++) for (let j = i + 1; j < ns.length; j++) {
+    const a = ns[i], b = ns[j]; let dx = b.x - a.x, dy = b.y - a.y; let d2 = dx * dx + dy * dy || .01;
+    if (d2 > 90000) continue;
+    const f = 1400 / d2 * alpha; const d = Math.sqrt(d2); dx /= d; dy /= d;
+    a.vx -= dx * f; a.vy -= dy * f; b.vx += dx * f; b.vy += dy * f;
+  }
+  g.edges.forEach(e => {
+    const L = e.type === "member" ? 55 : 70;
+    let dx = e.b.x - e.a.x, dy = e.b.y - e.a.y; const d = Math.sqrt(dx * dx + dy * dy) || .01;
+    const f = (d - L) * .04 * alpha; dx /= d; dy /= d;
+    e.a.vx += dx * f; e.a.vy += dy * f; e.b.vx -= dx * f; e.b.vy -= dy * f;
+  });
+  ns.forEach(n => {
+    n.vx += (W / 2 - n.x) * .004 * alpha; n.vy += (H / 2 - n.y) * .004 * alpha;
+    if (n.fixed) { n.vx = n.vy = 0; return; }
+    n.x += n.vx; n.y += n.vy; n.vx *= .55; n.vy *= .55;
+  });
+}
+function renderConnections() {
+  $("#view").innerHTML = `<p class="section-intro">Who rode with whom, who killed whom, and who belonged to which gang or posse. Drag a name to move it, drag the background to pan, scroll to zoom, and select a name to open its record.</p>
+    <div class="toolbar">
+      <input type="search" id="netQ" placeholder="Find a name…" value="${esc(ui.netQ)}" aria-label="Find a name in the web">
+      <div class="chips">
+        <button class="chip" type="button" data-nf="assoc" aria-pressed="${ui.netFilters.has("assoc")}">Rode with</button>
+        <button class="chip" type="button" data-nf="killed" aria-pressed="${ui.netFilters.has("killed")}">Killed or brought down</button>
+        <button class="chip" type="button" data-nf="member" aria-pressed="${ui.netFilters.has("member")}">Gang &amp; posse ties</button>
+      </div>
+    </div>
+    <div class="net-legend">${ROLES.map(r => `<span><span class="dot" style="background:var(${ROLE_VAR[r]})"></span>${r}</span>`).join("")}
+      <span><span class="dot" style="background:var(--brass);border-radius:1px"></span>Gang or posse</span>
+      <span><i style="border-color:var(--ink-soft)"></i>Rode with</span><span><i style="border-color:var(--accent)"></i>Killed / brought down</span><span><i style="border-color:var(--brass);border-top-style:dashed"></i>Member</span></div>
+    <div class="net-wrap"><canvas id="net" aria-label="Network of connections between people and gangs"></canvas><div class="net-tip" id="netTip"></div><div class="net-help">Scroll to zoom · drag to pan</div></div>`;
+  const cv = $("#net"), wrap = cv.parentElement;
+  const W = wrap.clientWidth, H = cv.clientHeight || 600;
+  const g = buildGraph(); layout(g, W, H);
+  net = { g, cv, W, H, k: 1, ox: 0, oy: 0, hover: null, drag: null, pan: null, raf: 0 };
+  if (g.nodes.length) {
+    const xs = g.nodes.map(n => n.x), ys = g.nodes.map(n => n.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    net.k = Math.min(1.6, (W - 120) / Math.max(1, x1 - x0), (H - 60) / Math.max(1, y1 - y0));
+    net.ox = W / 2 - (x0 + x1) / 2 * net.k; net.oy = H / 2 - (y0 + y1) / 2 * net.k;
+  }
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const css = getComputedStyle(document.documentElement);
+  const col = (v) => css.getPropertyValue(v).trim() || "#888";
+  const rad = (n) => n.kind === "gang" ? 7 : 3.5 + Math.sqrt(n.deg) * 1.3;
+  const toWorld = (mx, my) => [(mx - net.ox) / net.k, (my - net.oy) / net.k];
+  function neighbors(n) { const s = new Set([n]); g.edges.forEach(e => { if (!ui.netFilters.has(e.type)) return; if (e.a === n) s.add(e.b); if (e.b === n) s.add(e.a); }); return s; }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.save(); ctx.translate(net.ox, net.oy); ctx.scale(net.k, net.k);
+    const q = ui.netQ.trim().toLowerCase();
+    const focus = net.hover ? neighbors(net.hover) : null;
+    const match = q ? new Set(g.nodes.filter(n => n.label.toLowerCase().includes(q))) : null;
+    const lit = (n) => (!focus || focus.has(n)) && (!match || match.has(n) || (focus && focus.has(n)));
+    g.edges.forEach(e => {
+      if (!ui.netFilters.has(e.type)) return;
+      const on = (!focus || (focus.has(e.a) && focus.has(e.b) && (e.a === net.hover || e.b === net.hover))) && (!match || match.has(e.a) || match.has(e.b));
+      ctx.globalAlpha = on ? (e.type === "assoc" ? .55 : .85) : .07;
+      ctx.strokeStyle = col(e.type === "killed" ? "--accent" : e.type === "member" ? "--brass" : "--ink-soft");
+      ctx.lineWidth = (e.type === "killed" ? 1.6 : 1) / Math.sqrt(net.k);
+      ctx.setLineDash(e.type === "member" ? [4, 3] : []);
+      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke();
+      if (e.type === "killed" && on) {
+        const ang = Math.atan2(e.b.y - e.a.y, e.b.x - e.a.x), r = rad(e.b) + 2;
+        const tx = e.b.x - Math.cos(ang) * r, ty = e.b.y - Math.sin(ang) * r;
+        ctx.setLineDash([]); ctx.fillStyle = ctx.strokeStyle; ctx.beginPath();
+        ctx.moveTo(tx, ty); ctx.lineTo(tx - Math.cos(ang - .4) * 7, ty - Math.sin(ang - .4) * 7); ctx.lineTo(tx - Math.cos(ang + .4) * 7, ty - Math.sin(ang + .4) * 7); ctx.fill();
+      }
+    });
+    ctx.setLineDash([]);
+    g.nodes.forEach(n => {
+      ctx.globalAlpha = lit(n) ? 1 : .15;
+      ctx.fillStyle = col(n.color); ctx.strokeStyle = col("--sheet"); ctx.lineWidth = 1.5 / net.k;
+      const r = rad(n);
+      ctx.beginPath(); n.kind === "gang" ? ctx.rect(n.x - r, n.y - r, r * 2, r * 2) : ctx.arc(n.x, n.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    ctx.font = `${13 / Math.max(1, net.k * .8)}px "Alegreya Sans SC", sans-serif`;
+    ctx.textBaseline = "middle";
+    g.nodes.forEach(n => {
+      const show = (focus && focus.has(n)) || (match && match.has(n)) || (!focus && !match && (n.deg >= 5 || n.kind === "gang")) || net.k > 1.8;
+      if (!show || !lit(n)) return;
+      const r = rad(n);
+      ctx.lineWidth = 3 / net.k; ctx.strokeStyle = col("--sheet"); ctx.fillStyle = col(n === net.hover ? "--accent" : "--ink");
+      ctx.strokeText(n.label, n.x + r + 3, n.y); ctx.fillText(n.label, n.x + r + 3, n.y);
+    });
+    ctx.restore();
+  }
+  function settle(frames) { cancelAnimationFrame(net.raf); let f = 0; const step = () => { tick(g, W, H, .25); draw(); if (++f < frames || net.drag) net.raf = requestAnimationFrame(step); }; net.raf = requestAnimationFrame(step); }
+  function hit(mx, my) { const [x, y] = toWorld(mx, my); let best = null, bd = 1e9; g.nodes.forEach(n => { const d = (n.x - x) ** 2 + (n.y - y) ** 2; const r = rad(n) + 5 / net.k; if (d < r * r && d < bd) { bd = d; best = n; } }); return best; }
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  let downAt = null;
+  cv.onpointerdown = (e) => { cv.setPointerCapture(e.pointerId); const [mx, my] = pos(e); downAt = [mx, my]; const n = hit(mx, my); if (n) { net.drag = n; n.fixed = true; settle(1); } else net.pan = [mx - net.ox, my - net.oy]; cv.classList.add("dragging"); };
+  cv.onpointermove = (e) => {
+    const [mx, my] = pos(e);
+    if (net.drag) { const [x, y] = toWorld(mx, my); net.drag.x = x; net.drag.y = y; return; }
+    if (net.pan) { net.ox = mx - net.pan[0]; net.oy = my - net.pan[1]; draw(); return; }
+    const n = hit(mx, my);
+    if (n !== net.hover) { net.hover = n; draw(); }
+    const tip = $("#netTip");
+    if (n) { tip.style.display = "block"; tip.textContent = n.label + (n.kind === "gang" ? " (gang)" : ""); tip.style.left = Math.min(mx + 14, W - tip.offsetWidth - 6) + "px"; tip.style.top = (my + 12) + "px"; cv.style.cursor = "pointer"; }
+    else { tip.style.display = "none"; cv.style.cursor = ""; }
+  };
+  cv.onpointerup = (e) => {
+    const [mx, my] = pos(e); const moved = downAt && Math.hypot(mx - downAt[0], my - downAt[1]) > 4;
+    if (net.drag) { const n = net.drag; n.fixed = false; net.drag = null; if (!moved) { const [k, id] = n.key.split(":"); openDrawer(k === "p" ? "person" : "gang", id); } else settle(60); }
+    net.pan = null; cv.classList.remove("dragging");
+  };
+  cv.onpointerleave = () => { if (!net.drag && !net.pan && net.hover) { net.hover = null; $("#netTip").style.display = "none"; draw(); } };
+  cv.addEventListener("wheel", (e) => { e.preventDefault(); const [mx, my] = pos(e); const f = Math.exp(-e.deltaY * .0015); const k = Math.min(4, Math.max(.4, net.k * f)); net.ox = mx - (mx - net.ox) * (k / net.k); net.oy = my - (my - net.oy) * (k / net.k); net.k = k; draw(); }, { passive: false });
+  $("#netQ").addEventListener("input", (e) => { ui.netQ = e.target.value; draw(); });
+  $$("[data-nf]").forEach(b => b.onclick = () => { const f = b.dataset.nf; ui.netFilters.has(f) ? ui.netFilters.delete(f) : ui.netFilters.add(f); b.setAttribute("aria-pressed", ui.netFilters.has(f)); draw(); });
+  draw();
+}
+
+/* ---------- On This Day ---------- */
+const now = new Date();
+ui.otd = ui.otd || { m: now.getMonth() + 1, d: now.getDate() };
+function dayItems(m, d) {
+  const ev = D.events.map(e => ({ e, md: eventMD(e) })).filter(x => x.md && x.md.m === m && x.md.d === d).sort((a, b) => a.md.y - b.md.y);
+  const born = D.people.map(p => ({ p, md: mdOf(p.birthDate) })).filter(x => x.md && x.md.m === m && x.md.d === d).sort((a, b) => a.md.y - b.md.y);
+  const died = D.people.map(p => ({ p, md: mdOf(p.deathDate) })).filter(x => x.md && x.md.m === m && x.md.d === d).sort((a, b) => a.md.y - b.md.y);
+  return { ev, born, died, n: ev.length + born.length + died.length };
+}
+function shiftDay(m, d, k) { const t = new Date(2024, m - 1, d + k); return { m: t.getMonth() + 1, d: t.getDate() }; }
+function renderOtdStrip() {
+  const t = { m: now.getMonth() + 1, d: now.getDate() }, it = dayItems(t.m, t.d);
+  const el = $("#otdStrip"); if (!el) return;
+  if (!D.people.length) { el.innerHTML = ""; return; }
+  const first = it.ev[0] ? it.ev[0].e.name : it.died[0] ? it.died[0].p.name + " died" : it.born[0] ? it.born[0].p.name + " was born" : "";
+  el.innerHTML = `<a href="#today"><b>On this day, ${MONTHS[t.m - 1]} ${t.d}:</b> ${it.n ? `${esc(first)}${it.n > 1 ? ` and ${it.n - 1} more` : ""}` : "nothing recorded yet. See the nearest dates"} →</a>`;
+}
+function renderToday() {
+  const { m, d } = ui.otd, it = dayItems(m, d), yr = now.getFullYear();
+  const ago = (y) => `${yr - y} years ago`;
+  const isToday = m === now.getMonth() + 1 && d === now.getDate();
+  const daysIn = new Date(2024, m, 0).getDate();
+  const evRow = (x) => `<div class="otd-row"><span class="otd-yr">${x.md.y}</span><div><button class="plink" type="button" data-open="event:${esc(x.e.id)}">${esc(x.e.name)}</button> <span class="kind">${esc(x.e.kind)}</span><div class="muted otd-sub">${esc(x.e.place)} · ${ago(x.md.y)}</div></div></div>`;
+  const pRow = (x, verb) => { const p = x.p; const a = verb === "died" ? ageAt(p.birthDate, p.deathDate) ?? (p.by ? x.md.y - p.by : null) : null;
+    return `<div class="otd-row" style="--role:${roleColor(p)}"><span class="otd-yr">${x.md.y}</span><div>${pLink(p)}${p.alias ? ` <span class="muted">“${esc(p.alias)}”</span>` : ""}<div class="muted otd-sub">${verb === "born" ? `Born${p.birthPlace ? " in " + esc(p.birthPlace) : ""}` : `${esc(p.cause || "Died")}${p.deathPlace ? " · " + esc(p.deathPlace) : ""}${a != null ? ` · aged ${a}` : ""}`} · ${ago(x.md.y)}</div></div></div>`; };
+  const sec = (title, rows) => `<section class="otd-sec"><h3>${title} <span class="muted">· ${rows.length}</span></h3>${rows.length ? rows.join("") : `<p class="muted">None recorded.</p>`}</section>`;
+  let nearby = "";
+  if (!it.n) {
+    const near = [];
+    for (let k = 1; k <= 7 && near.length < 6; k++) for (const s of [-k, k]) { const q = shiftDay(m, d, s), x = dayItems(q.m, q.d); if (x.n) near.push({ q, x, s }); }
+    nearby = near.length ? `<section class="otd-sec"><h3>Nearest dates</h3>${near.slice(0, 4).map(({ q, x }) => `<p><button class="plink" type="button" data-go="${q.m}-${q.d}">${MONTHS[q.m - 1]} ${q.d}</button> <span class="muted">· ${[x.ev.length && `${x.ev.length} event${x.ev.length > 1 ? "s" : ""}`, x.born.length && `${x.born.length} born`, x.died.length && `${x.died.length} died`].filter(Boolean).join(", ")}</span></p>`).join("")}</section>` : "";
+  }
+  const dated = D.people.filter(p => p.birthDate || p.deathDate).length;
+  $("#view").innerHTML = `<div class="otd-head">
+      <button class="btn ghost" type="button" id="otdPrev" aria-label="Previous day">‹</button>
+      <div class="otd-date"><h2>${MONTHS[m - 1]} ${d}</h2><div class="muted">${isToday ? "Today" : "&nbsp;"}</div></div>
+      <button class="btn ghost" type="button" id="otdNext" aria-label="Next day">›</button>
+      <span class="spacer"></span>
+      <select id="otdM" aria-label="Month">${MONTHS.map((n, i) => `<option value="${i + 1}" ${i + 1 === m ? "selected" : ""}>${n}</option>`).join("")}</select>
+      <select id="otdD" aria-label="Day">${Array.from({ length: daysIn }, (_, i) => `<option ${i + 1 === d ? "selected" : ""}>${i + 1}</option>`).join("")}</select>
+      ${isToday ? "" : `<button class="btn" type="button" id="otdToday">Today</button>`}
+    </div>
+    ${it.n ? "" : `<div class="notice" style="margin-bottom:20px">Nothing in the ledger happened on ${MONTHS[m - 1]} ${d} yet. As more people and events are added, more days will fill in.</div>`}
+    <div class="otd-grid">${sec("Events", it.ev.map(evRow))}${sec("Born", it.born.map(x => pRow(x, "born")))}${sec("Died", it.died.map(x => pRow(x, "died")))}${nearby}</div>
+    <p class="muted" style="font-size:14px;margin:4px 0 48px">${dated} of ${D.people.length} people have exact dates; the rest only have years and can't be placed on a day. Add an exact date with Edit.</p>`;
+  const go = (q) => { ui.otd = q; renderToday(); };
+  $("#otdPrev").onclick = () => go(shiftDay(m, d, -1));
+  $("#otdNext").onclick = () => go(shiftDay(m, d, 1));
+  $("#otdM").onchange = (e) => { const nm = +e.target.value; go({ m: nm, d: Math.min(d, new Date(2024, nm, 0).getDate()) }); };
+  $("#otdD").onchange = (e) => go({ m, d: +e.target.value });
+  if ($("#otdToday")) $("#otdToday").onclick = () => go({ m: now.getMonth() + 1, d: now.getDate() });
+  $$("[data-go]").forEach(b => b.onclick = () => { const [a, c] = b.dataset.go.split("-").map(Number); go({ m: a, d: c }); });
+  wireOpeners($("#view"));
+}
+
+/* ---------- Routing ---------- */
+const VIEWS = { people: renderPeople, today: renderToday, events: renderEvents, towns: renderTowns, gangs: renderGangs, trails: renderTrails, map: renderMap, timeline: renderTimeline, connections: renderConnections, weapons: renderWeapons };
+const ADD_LABEL = { events: ["event", "Add an event"], towns: ["town", "Add a town"], gangs: ["gang", "Add a gang or posse"], trails: ["trail", "Add a trail"] };
+const currentView = () => VIEWS[location.hash.slice(1)] ? location.hash.slice(1) : "people";
+function route() {
+  const v = currentView();
+  Object.keys(VIEWS).forEach(t => { const a = $("#tab-" + t); t === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"); });
+  $("#addBtn").textContent = (ADD_LABEL[v] || ["person", "Add a person"])[1];
+  if (status) { $("#view").innerHTML = `<div class="notice">${status}</div>`; return; }
+  VIEWS[v]();
+}
+window.addEventListener("hashchange", () => { route(); });
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (currentView() === "connections" && !status) renderConnections(); }, 250); });
+
+/* ---------- Forms ---------- */
+const FORMS = {
+  person: { coll: "people", title: "person", fields: [
+    ["name", "Name", "text", 1], ["alias", "Nickname or alias"], ["role", "Role", ROLES], ["cause", "Cause of death"],
+    ["born", "Born (year)", "text", 0, "1859 or c. 1845"], ["birthPlace", "Birth location", "text", 0, "Town, ST"],
+    ["died", "Died (year)"], ["deathPlace", "Death location", "text", 0, "Town, ST"],
+    ["birthDate", "Exact birth date (if known)", "date"], ["deathDate", "Exact death date (if known)", "date"],
+    ["dateNote", "Note on the dates (conflicting accounts)", "full"],
+    ["resting", "Resting place", "full", 0, "Cemetery — Town, ST"],
+    ["responsible", "Responsible party (separate with ;)", "full"], ["operating", "Operating locations (separate with ;)", "full", 0, "Texas; New Mexico"],
+    ["associates", "Famous known associates (separate with ;)", "area"], ["incidents", "Notable incidents (separate with ;)", "area"],
+    ["weapons", "Weapons (separate with ;)", "full", 0, "Colt Single Action Army revolver; Winchester 1873"],
+    ["legends", "Legends, one per line, each ending with | Fact, | Disputed or | Legend", "area", 0, "Rumors of survival | Legend"],
+    ["sources", "Sources, one per line as Title | https://link", "area", 0, "Wikipedia: Wyatt Earp | https://en.wikipedia.org/wiki/Wyatt_Earp"],
+    ["bio", "Biography (leave a blank line between paragraphs)", "area"],
+    ["visited", "Have you visited the grave?", ["Not yet", "Visited"]], ["visitedDate", "When (optional)", "text", 0, "June 2026"],
+    ["visitNote", "Your visit notes (shown on the card)", "area", 0, "What it's like there, directions, what to look for"],
+    ["notes", "Clerk's note (doubts, conflicting accounts)", "area"],
+    ["eras", "Era (leave all unchecked to work it out from dates)", "eras"] ] },
+  town: { coll: "towns", title: "town", fields: [["name", "Town name", "text", 1], ["state", "State (2 letters)", "text", 1, "AZ"], ["founded", "Founded", "text", 0, "1879"], ["knownFor", "Known for", "text", 0, "Silver mining"], ["summary", "Summary", "area"], ["visited", "Have you been here?", ["Not yet", "Visited"]], ["visitedDate", "When (optional)", "text", 0, "June 2026"], ["visitNote", "Your visit notes", "area"]] },
+  event: { coll: "events", title: "event", fields: [["name", "Event name", "text", 1], ["kind", "Kind", EVENT_KINDS], ["date", "Date", "text", 0, "Oct 26, 1881"], ["year", "Year", "text", 1, "1881"], ["place", "Place", "text", 0, "Tombstone, AZ"], ["state", "State (2 letters)", "text", 0, "AZ"], ["town", "Town in the ledger", "town"], ["participants", "People involved (names, separate with ;)", "area"], ["summary", "Summary", "area"]] },
+  trail: { coll: "trails", title: "trail", fields: [["name", "Trail name", "text", 1], ["aka", "Also called"], ["years", "Years in use", "text", 0, "1867–1884"], ["length", "Length", "text", 0, "About 800 miles"], ["start", "Starting point", "text", 0, "San Antonio, TX"], ["end", "End point", "text", 0, "Abilene, KS"], ["cattle", "Cattle driven", "full"], ["stops", "Route stops, in order (separate with ;)", "area", 0, "San Antonio, TX; Fort Worth, TX; Red River Station, TX; Abilene, KS"], ["states", "States crossed (separate with ;)", "full", 0, "Texas; Oklahoma; Kansas"], ["namedFor", "Named for", "full"], ["namesakes", "Namesakes in the ledger (names, separate with ;)", "full"], ["summary", "Short summary (for the card)", "area"], ["history", "History (leave a blank line between paragraphs)", "area"], ["sources", "Sources, one per line as Title | https://link", "area"], ["notes", "Clerk's note", "area"]] },
+  gang: { coll: "gangs", title: "gang or posse", fields: [["name", "Name", "text", 1], ["kind", "Kind", GANG_KINDS], ["years", "Years active", "text", 0, "1896–1901"], ["region", "Region"], ["members", "Members (names, separate with ;)", "area"], ["summary", "Summary", "area"]] },
+};
+let formCtx = null;
+function openForm(kind, id) {
+  const spec = FORMS[kind]; const cur = id ? ({ person: idx.byId, town: idx.town, event: idx.event, gang: idx.gang, trail: idx.trail }[kind][id]) : null;
+  formCtx = { kind, id };
+  $("#formTitle").textContent = cur ? `Edit ${cur.name}` : `Add a ${spec.title}`;
+  $("#formErr").textContent = "";
+  const val = (k) => {
+    if (!cur) return "";
+    if (k === "visited") return cur.visited ? "Visited" : "Not yet";
+    if (k === "legends") return cur.legends.map(l => `${l.text} | ${l.verdict}`).join("\n");
+    if (k === "sources") return cur.sources.map(s => s.url ? `${s.title} | ${s.url}` : s.title).join("\n");
+    if (k === "participants" || k === "members" || k === "namesakes") return cur[k].map(pid => idx.byId[pid]?.name || pid).join("; ");
+    return Array.isArray(cur[k]) ? cur[k].join("; ") : (cur[k] ?? "");
+  };
+  $("#formGrid").innerHTML = spec.fields.map(([k, label, type = "text", req, ph]) => {
+    const v = esc(val(k)); const idA = `f-${k}`;
+    if (Array.isArray(type)) return `<label for="${idA}">${label}<select id="${idA}">${type.map(o => `<option ${String(val(k) || type[0]) === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>`;
+    if (type === "eras") { const sel = cur ? cur.eraOverride : []; return `<fieldset class="full era-pick"><legend>${label}</legend>${ERAS.map(e => `<label><input type="checkbox" id="f-era-${e.id}" value="${e.id}" ${sel.includes(e.id) ? "checked" : ""}> ${e.label}</label>`).join("")}</fieldset>`; }
+    if (type === "town") return `<label for="${idA}">${label}<select id="${idA}"><option value="">None</option>${[...D.towns].sort((a, b) => a.name.localeCompare(b.name)).map(t => `<option value="${esc(t.id)}" ${val(k) === t.id ? "selected" : ""}>${esc(t.name)}, ${esc(t.state)}</option>`).join("")}</select></label>`;
+    if (type === "date") return `<label for="${idA}">${label}<input type="date" id="${idA}" value="${v}" min="1700-01-01" max="1999-12-31"></label>`;
+    if (type === "area") return `<label class="full" for="${idA}">${label}<textarea id="${idA}" ${ph ? `placeholder="${esc(ph)}"` : ""}>${v}</textarea></label>`;
+    return `<label class="${type === "full" ? "full" : ""}" for="${idA}">${label}<input id="${idA}" value="${v}" ${req ? "required" : ""} ${ph ? `placeholder="${esc(ph)}"` : ""}></label>`;
+  }).join("");
+  closeDrawer();
+  $("#formDlg").showModal(); $("#f-name").focus();
+}
+$("#formCancel").onclick = () => $("#formDlg").close();
+$("#entryForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const { kind, id } = formCtx; const spec = FORMS[kind];
+  if (!db) { $("#formErr").textContent = "The database isn't available in this view, so the entry can't be saved."; return; }
+  const data = {}; const v = (k) => ($("#f-" + k)?.value ?? "").trim();
+  const unknown = [];
+  spec.fields.forEach(([k]) => {
+    if (k === "eras") data[k] = ERAS.filter(e => $("#f-era-" + e.id)?.checked).map(e => e.id);
+    else if (k === "legends") data[k] = v(k).split("\n").map(l => l.trim()).filter(Boolean).map(l => { const [t, vd] = l.split("|").map(s => s.trim()); return { text: t, verdict: VERDICTS.find(x => x.toLowerCase() === (vd || "").toLowerCase()) || "Legend" }; });
+    else if (k === "sources") data[k] = v(k).split("\n").map(l => l.trim()).filter(Boolean).map(l => { const parts = l.split("|").map(s => s.trim()); const url = parts.find(s => /^https?:\/\//i.test(s)) || ""; const title = parts.find(s => s !== url) || url; return { title, url }; });
+    else if (k === "participants" || k === "members" || k === "namesakes") data[k] = arr(v(k)).map(n => { const p = findPerson(n); if (!p) unknown.push(n); return p?.id; }).filter(Boolean);
+    else if (MULTI.includes(k) || k === "stops" || k === "states") data[k] = arr(v(k));
+    else if (k === "visited") data[k] = v(k) === "Visited";
+    else if (k === "year") data[k] = year(v(k)) || v(k);
+    else if (k === "state") data[k] = v(k).toUpperCase().slice(0, 2);
+    else data[k] = v(k);
+  });
+  if (!data.name) { $("#formErr").textContent = "Give the entry a name."; return; }
+  if (kind === "person" && id && idx.byId[id]?.photoId) { const c = idx.byId[id]; Object.assign(data, { photoId: c.photoId, photoCredit: c.photoCredit, photoStatus: c.photoStatus }); }
+  if (unknown.length) { $("#formErr").textContent = `Not in the ledger yet: ${unknown.join(", ")}. Add them as people first, or check the spelling.`; return; }
+  const list = D[spec.coll];
+  let docId = id;
+  if (!docId) { const base = slugify(data.name); docId = base; let n = 2; while (list.some(x => x.id === docId)) docId = base + "-" + n++; }
+  $("#formSave").disabled = true;
+  try {
+    await db.collection(spec.coll).doc(docId).set(data);
+    $("#formDlg").close(); toast(id ? "Entry updated" : `${data.name} added to the ledger`);
+  } catch (err) {
+    if (err?.code === "invalid_argument") { canWrite = false; $("#addBtn").hidden = true; }
+    $("#formErr").textContent = err?.code === "invalid_argument" ? "You can read this ledger but not change it." : err?.code === "quota_exceeded" ? "The ledger is full. Remove some entries first." : "Couldn't save. Check your connection and try again.";
+  } finally { $("#formSave").disabled = false; }
+});
+$("#addBtn").onclick = () => openForm((ADD_LABEL[currentView()] || ["person"])[0], null);
+
+/* ---------- CSV ---------- */
+$("#copyCsv").onclick = async () => {
+  const cols = ["name","alias","role","born","birthPlace","died","deathPlace","resting","cause","responsible","operating","associates","incidents","weapons","legends","notes","bio","sources"];
+  const cell = (p, c) => c === "legends" ? p.legends.map(l => `${l.text} (${l.verdict})`).join("; ") : c === "sources" ? p.sources.map(s => s.url || s.title).join("; ") : Array.isArray(p[c]) ? p[c].join("; ") : p[c] ?? "";
+  const q = v => `"${String(v).replace(/"/g, '""')}"`;
+  const csv = [cols.join(","), ...D.people.map(p => cols.map(c => q(cell(p, c))).join(","))].join("\n");
+  try { await navigator.clipboard.writeText(csv); toast(`Copied ${D.people.length} people as CSV`); } catch { toast("Your browser blocked copying"); }
+};
+let tt; function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2600); }
+
+/* ---------- Data ---------- */
+route();
+(async () => {
+  const norm0 = { people: normPerson, towns: normTown, events: normEvent, gangs: normGang, trails: normTrail };
+  if (PUB) {
+    canWrite = false; $("#addBtn").hidden = true;
+    try {
+      const r = await fetch(PUB.snapshot); if (!r.ok) throw new Error(r.status);
+      const snap = await r.json();
+      Object.keys(norm0).forEach(c => { D[c] = Object.entries(snap[c] || {}).map(([id, d]) => norm0[c](id, d || {})); loaded[c] = true; });
+      const when = PUB.at || (snap.savedAt && !isNaN(new Date(snap.savedAt)) ? new Date(snap.savedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "");
+      $("#footNote").textContent = `Read-only edition${when ? ", last updated " + when : ""}.`;
+      status = ""; rebuild(); renderStats(); renderOtdStrip(); route();
+    } catch (e) { status = "The ledger couldn't be loaded. Try refreshing the page."; route(); }
+    return;
+  }
+  db = await (window.claude?.use ? window.claude.use("db") : Promise.resolve(null)).catch(() => null);
+  if (!db) { status = "The ledger's records can't be reached in this view. Open this page signed in to claude.ai to see them."; $("#addBtn").hidden = true; route(); return; }
+  try { const user = await window.claude.use("user"); const ce = user && user.canEdit ? await user.canEdit() : null; if (ce === false) { canWrite = false; $("#addBtn").hidden = true; } } catch {}
+  if (canWrite) { try { assets = await window.claude.use("assets"); } catch { assets = null; } }
+  let downloads = null; try { downloads = await window.claude.use("downloads"); } catch {}
+  if (downloads && canWrite) {
+    const dl = $("#dlBtn"); dl.hidden = false;
+    dl.onclick = async () => {
+      const snap = { savedAt: new Date().toISOString() };
+      ["people", "towns", "events", "gangs", "trails"].forEach(c => snap[c] = RAW[c] || {});
+      try { await downloads.save({ filename: "data.json", data: JSON.stringify(snap) }); toast("data.json saved. Put it in the app project's www folder."); }
+      catch (e) { toast("Download didn't go through: " + (e?.message || "cancelled")); }
+    };
+  }
+  if (assets && canWrite) {
+    const sb = $("#snapBtn"); sb.hidden = false;
+    sb.onclick = async () => {
+      sb.disabled = true; sb.textContent = "Saving snapshot…";
+      try {
+        const snap = { savedAt: new Date().toISOString() };
+        Object.keys(norm).forEach(c => snap[c] = RAW[c] || {});
+        const blob = new Blob([JSON.stringify(snap)], { type: "application/json" });
+        const up = await assets.upload(blob);
+        try { const { assets: list } = await assets.list(); const old = (list || []).filter(a => a.id !== up.id && /json/.test(a.contentType || a.content_type || "")); for (const a of old) { try { await assets.delete(a.id); } catch {} } } catch {}
+        toast("Public snapshot saved. Ask Claude to update the public edition."); sb.textContent = "Snapshot saved ✓";
+      } catch (e) { toast("Couldn't save the snapshot: " + (e?.message || "try again")); sb.textContent = "Save public snapshot"; }
+      finally { sb.disabled = false; }
+    };
+  }
+  const timer = setTimeout(() => { if (!loaded.people) { status = "The ledger is taking a while to answer. It will appear here once it loads."; route(); } }, 10000);
+  const norm = { people: normPerson, towns: normTown, events: normEvent, gangs: normGang, trails: normTrail };
+  let pending = 0;
+  const refresh = () => {
+    rebuild(); renderStats(); renderOtdStrip();
+    status = !loaded.people ? status : (D.people.length ? "" : "The ledger is empty. Use “Add a person” to start the first entry.");
+    if (currentView() === "connections" && net && !status && document.activeElement?.id === "netQ") return;
+    route();
+    if (drawerState) openDrawer(drawerState.kind, drawerState.id);
+  };
+  Object.keys(norm).forEach(coll => {
+    db.collection(coll).onSnapshot(snap => {
+      RAW[coll] = {}; snap.docs.filter(d => d.exists).forEach(d => RAW[coll][d.id] = d.data() || {});
+      D[coll] = snap.docs.filter(d => d.exists).map(d => norm[coll](d.id, d.data() || {}));
+      if (!snap.metadata.fromCache) { loaded[coll] = true; if (coll === "people") clearTimeout(timer); }
+      else if (snap.docs.length) loaded[coll] = true;
+      cancelAnimationFrame(pending); pending = requestAnimationFrame(refresh);
+    }, err => { if (coll === "people") { clearTimeout(timer); status = "The ledger couldn't be loaded (" + esc(err?.code || "error") + ")."; route(); } });
+  });
+})();
+})();
+</script>
+</body>
+</html>

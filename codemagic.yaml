@@ -1,0 +1,60 @@
+# Codemagic builds the iPhone app from this repo and sends it to TestFlight.
+# Before the first build, replace the three CHANGEME values below
+# (and the one in capacitor.config.json). See README.md, step 4.
+workflows:
+  ios-testflight:
+    name: Frontier Ledger - TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: CHANGEME_API_KEY_NAME      # name of your App Store Connect API key in Codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.CHANGEME.frontierledger   # must match capacitor.config.json
+      vars:
+        APP_STORE_APPLE_ID: 0000000000                   # CHANGEME: the app's Apple ID number from App Store Connect
+        XCODE_WORKSPACE: ios/App/App.xcworkspace
+        XCODE_SCHEME: App
+      node: 20
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    scripts:
+      - name: Check the data file
+        script: node scripts/check-data.js
+      - name: Install packages
+        script: npm install
+      - name: Create the iOS project
+        script: npx cap add ios
+      - name: Make app icons and splash screens
+        script: npx @capacitor/assets generate --ios
+      - name: Copy the ledger into the app
+        script: npx cap sync ios
+      - name: App settings (iPhone only, no encryption)
+        script: |
+          PLIST=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST" || true
+          sed -i '' 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = 1;/g' ios/App/App.xcodeproj/project.pbxproj
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Set the build number
+        script: |
+          cd ios/App
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          agvtool new-version -all $((LATEST + 1))
+      - name: Build the app
+        script: xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

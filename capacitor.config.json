@@ -1,0 +1,9 @@
+{
+  "appId": "com.CHANGEME.frontierledger",
+  "appName": "Frontier Ledger",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#e9dcc0"
+  }
+}
