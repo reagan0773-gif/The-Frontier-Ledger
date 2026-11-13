@@ -239,6 +239,9 @@ dl.ledger dd ul { margin: 0; padding-left: 18px; }
 html.app #copyCsv { display: none; }
 html.app body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
 html.app .drawer { padding-top: env(safe-area-inset-top); }
+html.app body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); background: var(--paper); z-index: 20; pointer-events: none; }
+html.app .drawer.open::before { content: ""; position: fixed; top: 0; right: 0; width: min(540px, 100%); height: env(safe-area-inset-top); background: var(--sheet); z-index: 3; pointer-events: none; }
+html.app .drawer.open .close { position: fixed; top: calc(env(safe-area-inset-top) + 8px); right: 12px; z-index: 4; width: 40px; height: 40px; }
 .bio { margin: 6px 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); font-size: 16.5px; line-height: 1.6; }
 .bio p { margin: 0 0 10px; }
 .bio p:first-child::first-letter { font-family: var(--display, inherit); float: left; font-size: 3em; line-height: .9; padding: 4px 6px 0 0; color: var(--role, var(--brass)); }
