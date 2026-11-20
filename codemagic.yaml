@@ -1,19 +1,19 @@
 # Codemagic builds the iPhone app from this repo and sends it to TestFlight.
-# Before the first build, replace the three CHANGEME values below
-# (and the one in capacitor.config.json). See README.md, step 4.
+# To release a new version, change APP_VERSION below (1.1, 1.2, ...).
 workflows:
   ios-testflight:
     name: Frontier Ledger - TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: Frontier Ledger key      # name of your App Store Connect API key in Codemagic
+      app_store_connect: Frontier Ledger key
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.reagan.frontierledger   # must match capacitor.config.json
+        bundle_identifier: com.reagan.frontierledger
       vars:
-        APP_STORE_APPLE_ID: 6834229000                   # CHANGEME: the app's Apple ID number from App Store Connect
+        APP_STORE_APPLE_ID: 6834229000
+        APP_VERSION: "1.1"                               # the version number shown in the App Store
         XCODE_WORKSPACE: ios/App/App.xcworkspace
         XCODE_SCHEME: App
       node: 20
@@ -48,6 +48,7 @@ workflows:
           cd ios/App
           LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
           agvtool new-version -all $((LATEST + 1))
+          agvtool new-marketing-version "$APP_VERSION"
       - name: Build the app
         script: xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
     artifacts:
