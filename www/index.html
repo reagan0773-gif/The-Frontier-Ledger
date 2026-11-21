@@ -274,7 +274,7 @@ dialog.poster-dlg { border: 0; padding: 0; background: transparent; max-width: c
 .poster .frame.photo { width: 190px; height: 230px; padding: 4px; background: #2a1d10; overflow: hidden; }
 .poster .frame.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; filter: sepia(.45) contrast(1.08) brightness(.97); display: block; }
 .poster .cred { font-family: var(--body); font-size: 12.5px; font-style: italic; margin: -6px 0 10px; color: #4a3720; }
-.poster .pstat.authenticated { color: #3f5f2e; } .poster .pstat.disputed { color: #8a2f1d; }
+.poster .pstat.authenticated { color: #3f5f2e; } .poster .pstat.grave-marker { color: #5a4a36; } .poster .pstat.disputed { color: #8a2f1d; }
 dialog.poster-dlg[open] { overflow-y: auto; }
 .photo-ed { width: min(460px, calc(100vw - 32px)); margin-top: 14px; background: var(--sheet); border: 1px solid var(--rule); padding: 14px 16px; display: grid; gap: 10px; font-size: 15px; color: var(--ink); }
 .photo-ed .pe-title { font-family: var(--label); letter-spacing: .06em; font-size: 14px; color: var(--ink-soft); }
@@ -401,12 +401,12 @@ function normPerson(id, d) {
   p.eraOverride = arr(d.eras).filter(x => ERA[x]);
   const iso = (v) => /^\d{4}-\d{2}-\d{2}$/.test(str(v)) ? str(v) : "";
   p.birthDate = iso(d.birthDate); p.deathDate = iso(d.deathDate); p.dateNote = str(d.dateNote);
-  p.photoId = /^[\w-]+$/.test(str(d.photoId)) ? str(d.photoId) : ""; p.photoCredit = str(d.photoCredit); p.photoStatus = ["Authenticated", "Disputed", "Unverified"].includes(d.photoStatus) ? d.photoStatus : "Unverified";
-  p.visited = d.visited === true; p.visitedDate = str(d.visitedDate); p.visitNote = str(d.visitNote);
+  p.photoId = /^[\w-]+$/.test(str(d.photoId)) ? str(d.photoId) : ""; p.photoCredit = str(d.photoCredit); p.photoStatus = ["Authenticated", "Disputed", "Unverified", "Grave marker"].includes(d.photoStatus) ? d.photoStatus : "Unverified";
+  p.visited = !PUB && d.visited === true; p.visitedDate = str(d.visitedDate); p.visitNote = str(d.visitNote);
   p.by = year(p.born); p.dy = year(p.died);
   return p;
 }
-function normTown(id, d) { return { id, visited: d.visited === true, visitedDate: str(d.visitedDate), visitNote: str(d.visitNote), name: str(d.name), state: str(d.state).toUpperCase().slice(0, 2), founded: str(d.founded), knownFor: str(d.knownFor), summary: str(d.summary) }; }
+function normTown(id, d) { return { id, visited: !PUB && d.visited === true, visitedDate: str(d.visitedDate), visitNote: str(d.visitNote), name: str(d.name), state: str(d.state).toUpperCase().slice(0, 2), founded: str(d.founded), knownFor: str(d.knownFor), summary: str(d.summary) }; }
 function normEvent(id, d) { return { id, name: str(d.name), kind: EVENT_KINDS.includes(d.kind) ? d.kind : "Other", date: str(d.date), year: year(d.year ?? d.date), place: str(d.place), state: str(d.state).toUpperCase().slice(0, 2), town: str(d.town), participants: arr(d.participants), summary: str(d.summary) }; }
 function normTrail(id, d) {
   const srcs = (Array.isArray(d.sources) ? d.sources : []).map(s => typeof s === "string" ? { title: s, url: safeUrl(s) } : { title: str(s?.title) || str(s?.url), url: safeUrl(str(s?.url)) }).filter(s => s.title);
@@ -659,7 +659,7 @@ function drawerPerson(id) {
       ${row("Responsible", linkedNames(p.responsible))}
       ${row("Resting place", esc(p.resting))}
       ${row("Operated in", p.operating.map(s => { const k = NAME2ABBR[s] || placeKey(s); return k ? `<button class="plink" type="button" data-place="${esc(k)}">${esc(s)}</button>` : esc(s); }).join(", "))}
-      ${row("Associates", linkedNames(p.associates))}
+      ${row("Associates", linkedNames(p.associates.filter(a => !gs.some(g => g.name.trim().toLowerCase().replace(/^the\s+/, "") === String(a).trim().toLowerCase().replace(/^the\s+/, "")))))}
       ${row("Gangs & posses", gs.map(g => `<button class="plink" type="button" data-open="gang:${esc(g.id)}">${esc(g.name)}</button>`).join(", "))}
       ${row("Incidents", p.incidents.length ? `<ul>${p.incidents.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "")}
       ${row("Weapons", p.weapons.length ? `<ul>${p.weapons.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "")}
@@ -674,6 +674,23 @@ function drawerPerson(id) {
     </div>
     ${actions(`<button class="btn" type="button" id="drPoster">${roleOf(p) === "Outlaw" ? "Wanted poster" : "Poster"}</button>`)}`;
 }
+async function photoPack(onStep) {
+  const out = {}; const ids = [...new Set(Object.values(RAW.people || {}).map(d => d && d.photoId).filter(id => /^[\w-]+$/.test(String(id || ""))))];
+  let i = 0;
+  for (const id of ids) {
+    i++; if (onStep) onStep(i, ids.length);
+    try {
+      const r = await fetch("/_blob/" + id); if (!r.ok) continue;
+      const bmp = await createImageBitmap(await r.blob());
+      const sc = Math.min(1, 520 / bmp.height, 440 / bmp.width);
+      const c = document.createElement("canvas"); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+      c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      out[id] = c.toDataURL("image/jpeg", 0.8);
+    } catch {}
+  }
+  return out;
+}
+function stripVisits(coll) { const out = {}; for (const [id, d] of Object.entries(coll)) { const { visited, visitedDate, visitNote, ...rest } = d || {}; out[id] = rest; } return out; }
 function visitBlock(x, what) {
   return `<div class="visit"><b>✓ I've visited this ${what}${x.visitedDate ? ` · ${esc(x.visitedDate)}` : ""}</b>${x.visitNote ? `<span>${esc(x.visitNote)}</span>` : ""}</div>`;
 }
@@ -769,7 +786,7 @@ function openPoster(id) {
   const sub = { Outlaw: "for the following deeds", Lawman: "by order of the law, of record", Gunfighter: "known to the territory for", "Frontier Figure": "of public interest, known for" }[r];
   const initials = p.name.split(" ").filter(w => /^[A-Z]/.test(w)).map(w => w[0]).slice(0, 2).join("");
   const deeds = p.incidents.slice(0, 3).join(" · ") || "Deeds unrecorded";
-  const rode = [...(idx.pGangs[p.id] || []).map(g => g.name), ...p.associates].slice(0, 3).join(", ");
+  const rode = [...new Map([...(idx.pGangs[p.id] || []).map(g => g.name), ...p.associates].map(n => [String(n).trim().toLowerCase().replace(/^the\s+/, ""), String(n).trim()])).values()].slice(0, 3).join(", ");
   const dlg = $("#posterDlg");
   dlg.innerHTML = `<div class="poster">
     <button class="poster-close" type="button" id="posterClose" aria-label="Close poster">×</button>
@@ -777,7 +794,7 @@ function openPoster(id) {
     <div class="for">${sub.toUpperCase()}</div>
     <div class="txt">${esc(deeds)}</div>
     <div class="rule"></div>
-    ${p.photoId && (!PUB || PUB.photos?.[p.photoId]) ? `<div class="frame photo"><img src="${esc(PUB ? (PUB.photos?.[p.photoId] || "") : "/_blob/" + p.photoId)}" alt="Photograph of ${esc(p.name)}"></div><div class="cred">${p.photoCredit ? "Photo: " + esc(p.photoCredit) + " · " : ""}<span class="pstat ${p.photoStatus.toLowerCase()}">${p.photoStatus === "Authenticated" ? "Authenticated likeness" : p.photoStatus === "Disputed" ? "Disputed likeness" : "Unverified likeness"}</span></div>` : `<div class="frame" aria-hidden="true">${esc(initials)}</div>`}
+    ${p.photoId && (!PUB || PUB.photos?.[p.photoId]) ? `<div class="frame photo"><img src="${esc(PUB ? (PUB.photos?.[p.photoId] || "") : "/_blob/" + p.photoId)}" alt="${p.photoStatus === "Grave marker" ? "Grave marker of " : "Photograph of "}${esc(p.name)}"></div><div class="cred">${p.photoCredit ? "Photo: " + esc(p.photoCredit) + " · " : ""}<span class="pstat ${p.photoStatus.toLowerCase().replace(/\s+/g, "-")}">${p.photoStatus === "Authenticated" ? "Authenticated likeness" : p.photoStatus === "Disputed" ? "Disputed likeness" : p.photoStatus === "Grave marker" ? "Grave marker \u00b7 no known likeness" : "Unverified likeness"}</span></div>` : `<div class="frame" aria-hidden="true">${esc(initials)}</div>`}
     <div class="nm">${esc(p.name)}</div>
     ${p.alias ? `<div class="al">alias “${esc(p.alias)}”</div>` : ""}
     <div class="rule"></div>
@@ -793,7 +810,7 @@ function openPoster(id) {
     <div class="pe-title">${p.photoId ? "Change the photo" : "Add a photo to this poster"}</div>
     <label>Image file<input type="file" id="peFile" accept="image/*"></label>
     <label>Credit or source<input id="peCredit" value="${esc(p.photoCredit)}" placeholder="Library of Congress / my photo, 2026"></label>
-    <label>Is it really him (or her)?<select id="peStat">${["Authenticated", "Disputed", "Unverified"].map(o => `<option ${o === p.photoStatus ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+    <label>Is it really him (or her)?<select id="peStat">${["Authenticated", "Disputed", "Unverified", "Grave marker"].map(o => `<option ${o === p.photoStatus ? "selected" : ""}>${o}</option>`).join("")}</select></label>
     <div class="pe-act"><button class="btn" type="submit" id="peSave">Save</button>${p.photoId ? `<button class="btn danger" type="button" id="peDel">Remove photo</button>` : ""}<span class="pe-msg" id="peMsg" role="status"></span></div>
   </form>` : ""}`;
   if (!dlg.open) dlg.showModal();
@@ -1295,6 +1312,7 @@ route();
     try {
       const r = await fetch(PUB.snapshot); if (!r.ok) throw new Error(r.status);
       const snap = await r.json();
+      if (snap.photos && typeof snap.photos === "object") PUB.photos = Object.assign({}, snap.photos, PUB.photos || {});
       Object.keys(norm0).forEach(c => { D[c] = Object.entries(snap[c] || {}).map(([id, d]) => norm0[c](id, d || {})); loaded[c] = true; });
       const when = PUB.at || (snap.savedAt && !isNaN(new Date(snap.savedAt)) ? new Date(snap.savedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "");
       $("#footNote").textContent = `Read-only edition${when ? ", last updated " + when : ""}.`;
@@ -1311,8 +1329,11 @@ route();
     const dl = $("#dlBtn"); dl.hidden = false;
     dl.onclick = async () => {
       const snap = { savedAt: new Date().toISOString() };
-      ["people", "towns", "events", "gangs", "trails"].forEach(c => snap[c] = RAW[c] || {});
-      try { await downloads.save({ filename: "data.json", data: JSON.stringify(snap) }); toast("data.json saved. Put it in the app project's www folder."); }
+      ["people", "towns", "events", "gangs", "trails"].forEach(c => snap[c] = stripVisits(RAW[c] || {}));
+      const label = dl.textContent; dl.disabled = true;
+      snap.photos = await photoPack((i, n) => { dl.textContent = `Packing photos ${i} of ${n}…`; });
+      dl.textContent = label; dl.disabled = false;
+      try { await downloads.save({ filename: "data.json", data: JSON.stringify(snap) }); toast(`data.json saved with ${Object.keys(snap.photos).length} photos. Put it in the app project's www folder.`); }
       catch (e) { toast("Download didn't go through: " + (e?.message || "cancelled")); }
     };
   }
@@ -1322,7 +1343,8 @@ route();
       sb.disabled = true; sb.textContent = "Saving snapshot…";
       try {
         const snap = { savedAt: new Date().toISOString() };
-        Object.keys(norm).forEach(c => snap[c] = RAW[c] || {});
+        Object.keys(norm).forEach(c => snap[c] = stripVisits(RAW[c] || {}));
+        snap.photos = await photoPack((i, n) => { sb.textContent = `Packing photos ${i} of ${n}…`; });
         const blob = new Blob([JSON.stringify(snap)], { type: "application/json" });
         const up = await assets.upload(blob);
         try { const { assets: list } = await assets.list(); const old = (list || []).filter(a => a.id !== up.id && /json/.test(a.contentType || a.content_type || "")); for (const a of old) { try { await assets.delete(a.id); } catch {} } } catch {}
